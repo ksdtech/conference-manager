@@ -2,6 +2,17 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
+ |--------------------------------------------------------------------------
+ | Default layout
+ |--------------------------------------------------------------------------
+ |
+ | Used by application/core/MY_Loader.php to set layout for
+ | $this->load->template if the layout_name is not specified.
+ |
+ */
+$config['default_layout'] = 'application';
+
+/*
 |--------------------------------------------------------------------------
 | Base Site URL
 |--------------------------------------------------------------------------

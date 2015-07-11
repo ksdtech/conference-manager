@@ -58,7 +58,7 @@ class Users extends MY_Controller {
 			
 			$this->load->model('User', 'user');
 		
-            $this->load->helper(array('form', 'url'));
+			$this->load->helper(array('form', 'url'));
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules($add_user_rules);
 			
@@ -70,8 +70,8 @@ class Users extends MY_Controller {
 				} else {
 					$this->session->set_flashdata('error', 'User '.$user_id.' could not be created.');
 				}
-           		redirect('/admin/users/index');
-           		
+				redirect('/admin/users/index');
+				
 			}
 		}
 	}
@@ -114,25 +114,25 @@ class Users extends MY_Controller {
 			
 			$this->load->model('User', 'user');
 			
-            $this->load->helper(array('form', 'url'));
-			$this->load->library('form_validation');			
+			$this->load->helper(array('form', 'url'));
+			$this->load->library('form_validation');
 			$this->form_validation->set_rules($edit_user_rules);
 
-           	if ($this->form_validation->run() == FALSE) {
-           		
+			if ($this->form_validation->run() == FALSE) {
+				
 				$data = array('user' => $this->user->read($user_id));
 				$this->load->template('admin/users_edit', $data);
 				
-           	} else {
-           		           		
-           		if ($this->user->update($user_id, $this->input->post())) {
-					$this->session->set_flashdata('info', 'User '.$user_id.' was updated.');
-           		} else {
-           			$this->session->set_flashdata('error', 'User '.$user_id.' could not be updated.');
-           		}         		
-           		redirect('/admin/users/index');
+			} else {
 
-           	}
+				if ($this->user->update($user_id, $this->input->post())) {
+					$this->session->set_flashdata('info', 'User '.$user_id.' was updated.');
+				} else {
+					$this->session->set_flashdata('error', 'User '.$user_id.' could not be updated.');
+				}
+				redirect('/admin/users/index');
+
+			}
 		}
 	}
 
