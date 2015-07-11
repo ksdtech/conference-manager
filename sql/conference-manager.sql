@@ -69,6 +69,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `user_email` varchar(255) NOT NULL,
   `user_pass` varchar(60) NOT NULL,
   `user_salt` varchar(32) NOT NULL,
+	`first_name` varchar(40) NOT NULL,
+  `last_name` varchar(40) NOT NULL,
   `user_last_login` datetime DEFAULT NULL,
   `user_login_time` datetime DEFAULT NULL,
   `user_session_id` varchar(40) DEFAULT NULL,
@@ -87,98 +89,107 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- conference-manager - MySQL table install
 
 CREATE TABLE IF NOT EXISTS `resource_calendars` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `name` varchar(75),
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `name` varchar(40) NOT NULL,
+ `description` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE UNIQUE INDEX `rcal_name` ON `resource_calendars` (`name`);
 
 CREATE TABLE IF NOT EXISTS `appointment_days` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `schedule_id` int(11) unsigned,
- `resource_calendar_id` int(11) unsigned,
- `schedule_date` date, 
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `schedule_id` int(10) unsigned NOT NULL,
+ `resource_calendar_id` int(10) unsigned NOT NULL,
+ `schedule_date` date NOT NULL, 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `schedules` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `name` varchar(40),
- `interval_in_minutes` int(11),
- `duration_in_minutes` int(11),
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `name` varchar(40) NOT NULL,
+ `description` varchar(255) NOT NULL,
+ `interval_in_minutes` smallint(5) unsigned NOT NULL,
+ `duration_in_minutes` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE UNIQUE INDEX `sched_name` ON `schedules` (`name`);
 
 CREATE TABLE IF NOT EXISTS `time_blocks` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `schedule_id` int(11) unsigned,
- `start_hour` int(11),
- `start_minute` int(11),
- `duration_in_minutes` int(11),
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `schedule_id` int(10) unsigned NOT NULL,
+ `start_hour` tinyint(3) unsigned NOT NULL,
+ `start_minute` tinyint(3) unsigned NOT NULL,
+ `duration_in_minutes` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `user_contacts` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `user_id` int(11) unsigned,
- `contact_type` smallint(8),
- `contact_value` varchar(75),
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `user_id` int(10) unsigned NOT NULL,
+ `contact_type` tinyint(3) unsigned NOT NULL,
+ `contact_value` varchar(40) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `resource_types` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `name` varchar(75),
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `name` varchar(40) NOT NULL,
+ `description` varchar(255) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE UNIQUE INDEX `rtype_name` ON `resource_types` (`name`);
 
 CREATE TABLE IF NOT EXISTS `resources` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `name` varchar(75),
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `name` varchar(40) NOT NULL,
+ `description` varchar(255) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE UNIQUE INDEX `res_name` ON `resources` (`name`);
 
 CREATE TABLE IF NOT EXISTS `resource_groups` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `name` varchar(75),
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `name` varchar(40) NOT NULL,
+ `description` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE UNIQUE INDEX `rgrp_name` ON `resource_groups` (`name`);
 
 CREATE TABLE IF NOT EXISTS `resource_group_members` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `resource_group_id` int(11) unsigned,
- `resource_id` int(11) unsigned,
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `resource_group_id` int(10) unsigned NOT NULL,
+ `resource_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `scheduled_resources` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `resource_type_id` int(11) unsigned,
- `resource_id` int(11) unsigned,
- `location` varchar(75),
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `resource_type_id` int(10) unsigned NOT NULL,
+ `resource_id` int(10) unsigned NOT NULL,
+ `location` varchar(40) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `resource_managers` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `resource_id` int(11),
- `user_id` int(11),
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `resource_id` int(10) unsigned NOT NULL,
+ `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `scheduled_slots` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `appointment_day_id` int(11) unsigned,
- `time_block_id` int(11) unsigned,
- `schedule_resource_id` int(11) unsigned,
- `available` tinyint(1) unsigned,
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `appointment_day_id` int(10) unsigned NOT NULL,
+ `time_block_id` int(10) unsigned NOT NULL,
+ `schedule_resource_id` int(10) unsigned NOT NULL,
+ `available` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `reservations` (
- `id` int(11) unsigned NOT NULL auto_increment,
- `scheduled_slot_id` int(11) unsigned,
- `user_id` int(11) unsigned,
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `scheduled_slot_id` int(10) unsigned NOT NULL,
+ `user_id` int(10) unsigned NOT NULL,
  `last_notified_at` datetime,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
-
