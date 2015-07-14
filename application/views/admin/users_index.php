@@ -1,7 +1,7 @@
 <section class="section--center mdl-grid">
   <div class="mdl-card">
   <?php $attributes = array('id' => 'user_form'); ?>
-  <?php form_open(site_url('admin').'/users/action_perform', $attributes); ?>
+  <?php echo form_open(site_url('admin').'/users/action_perform', $attributes); ?>
   <input type="hidden" id="selected_action" name="selected_action" value=""></input>
     <div class="mdl-card__title">
     <ul>

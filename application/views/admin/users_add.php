@@ -1,7 +1,7 @@
 <h1>Add New User</h1>
 <?php echo validation_errors(); ?>
 
-<?php echo form_open('admin/users/add'); ?>
+<?php echo form_open(site_url('admin').'/users/add'); ?>
 	<div><label for="user_level">User level</label><br>
     <select id="user_level" name="user_level">
     <option value="1" <?php echo set_select('user_level', '1', TRUE); ?> >Parent</option>
