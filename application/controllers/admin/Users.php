@@ -13,10 +13,10 @@ class Users extends MY_Controller {
 		
 		if ($this->require_role('admin')) {
 			$this->load->model('User', 'user');
-				
+			$this->load->helper(array('form', 'url'));
+	
 			$data = array('users' => $this->user->all());
-			$this->load->template('admin/users_index', $data);
-			
+			$this->load->template('admin/users_index', $data);	
 		}
 	}
 	
@@ -57,8 +57,8 @@ class Users extends MY_Controller {
 			);
 			
 			$this->load->model('User', 'user');
-		
 			$this->load->helper(array('form', 'url'));
+			
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules($add_user_rules);
 			
@@ -136,6 +136,11 @@ class Users extends MY_Controller {
 		}
 	}
 
+	public function action_perform() {
+		$data = $this->input->post();
+		die("action_perform: ".$data['selected_action']);
+	}
+	
 	public function delete($user_id) {
 		
 		if ($this->require_role('admin')) {
