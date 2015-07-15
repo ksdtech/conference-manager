@@ -43,6 +43,7 @@ class TimeBlocks extends MY_Controller {
 			$tb_array = $this->timeblock->validate_tblocks($text, TRUE);
 			// $tb_array = [0] => array(600, 1200), 
 			//		   [1] => array(1500, 1800)
+			// foreach...
 			// $block['schedule_id'] = 1
 			// $block['start_hour'] = 8
 			// $block['start_minute'] = 15
