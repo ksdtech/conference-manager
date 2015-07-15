@@ -178,12 +178,13 @@ CREATE TABLE IF NOT EXISTS `resource_managers` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
+-- resource_type_id can be found this way:
+-- appointment_day.resource_calendar.resource_type_id
 CREATE TABLE IF NOT EXISTS `scheduled_slots` (
  `id` int(10) unsigned NOT NULL auto_increment,
  `appointment_day_id` int(10) unsigned NOT NULL,
  `time_block_id` int(10) unsigned NOT NULL,
  `resource_id` int(10) unsigned NOT NULL,
- `resource_type_id` int(10) unsigned NOT NULL,
  `location` varchar(40) NOT NULL,
  `available` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id`)
