@@ -88,8 +88,11 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 -- conference-manager - MySQL table install
 
+-- resource_calendar is for a specific event series
+-- like "2015 Bacich Intake Conferences"
 CREATE TABLE IF NOT EXISTS `resource_calendars` (
  `id` int(10) unsigned NOT NULL auto_increment,
+ `resource_type_id` int(10) unsigned NOT NULL,
  `name` varchar(40) NOT NULL,
  `description` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
@@ -131,6 +134,8 @@ CREATE TABLE IF NOT EXISTS `user_contacts` (
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
+-- resource_type is like "Home Room Conference"
+-- versus "Alternate Conference"
 CREATE TABLE IF NOT EXISTS `resource_types` (
  `id` int(10) unsigned NOT NULL auto_increment,
  `name` varchar(40) NOT NULL,
@@ -139,14 +144,18 @@ CREATE TABLE IF NOT EXISTS `resource_types` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 CREATE UNIQUE INDEX `rtype_name` ON `resource_types` (`name`);
 
+-- resource is like a teacher, "Jennifer Sterling"
 CREATE TABLE IF NOT EXISTS `resources` (
  `id` int(10) unsigned NOT NULL auto_increment,
+ `default_location` varchar(40) NOT NULL,
  `name` varchar(40) NOT NULL,
  `description` varchar(255) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 CREATE UNIQUE INDEX `res_name` ON `resources` (`name`);
 
+-- resource_group is like "Bacich Teacher"
+-- versus "Kent Teacher"
 CREATE TABLE IF NOT EXISTS `resource_groups` (
  `id` int(10) unsigned NOT NULL auto_increment,
  `name` varchar(40) NOT NULL,
@@ -162,14 +171,6 @@ CREATE TABLE IF NOT EXISTS `resource_group_members` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
-CREATE TABLE IF NOT EXISTS `scheduled_resources` (
- `id` int(10) unsigned NOT NULL auto_increment,
- `resource_type_id` int(10) unsigned NOT NULL,
- `resource_id` int(10) unsigned NOT NULL,
- `location` varchar(40) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
-
 CREATE TABLE IF NOT EXISTS `resource_managers` (
  `id` int(10) unsigned NOT NULL auto_increment,
  `resource_id` int(10) unsigned NOT NULL,
@@ -181,7 +182,9 @@ CREATE TABLE IF NOT EXISTS `scheduled_slots` (
  `id` int(10) unsigned NOT NULL auto_increment,
  `appointment_day_id` int(10) unsigned NOT NULL,
  `time_block_id` int(10) unsigned NOT NULL,
- `schedule_resource_id` int(10) unsigned NOT NULL,
+ `resource_id` int(10) unsigned NOT NULL,
+ `resource_type_id` int(10) unsigned NOT NULL,
+ `location` varchar(40) NOT NULL,
  `available` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
