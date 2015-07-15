@@ -65,12 +65,13 @@ class Users extends MY_Controller {
 			if ( $this->form_validation->run() == FALSE ) {
 				$this->load->template('admin/users_add');
 			} else {
-				if ($this->user->create($this->input->post())) {
+				$user_id = $this->user->create($this->input->post());
+				if ($user_id !== FALSE) {
 					$this->session->set_flashdata('info', 'User '.$user_id.' was created.');
 				} else {
 					$this->session->set_flashdata('error', 'User '.$user_id.' could not be created.');
 				}
-				redirect('/admin/users/index');
+				redirect(site_url('admin').'/users/index');
 				
 			}
 		}
@@ -130,7 +131,7 @@ class Users extends MY_Controller {
 				} else {
 					$this->session->set_flashdata('error', 'User '.$user_id.' could not be updated.');
 				}
-				redirect('/admin/users/index');
+				redirect(site_url('admin').'/users/index');
 
 			}
 		}
@@ -144,9 +145,17 @@ class Users extends MY_Controller {
 	public function delete($user_id) {
 		
 		if ($this->require_role('admin')) {
-			
-			$this->session->set_flashdata('info', 'User '.$user_id.' would have been deleted.');
-			redirect('/admin/users/index');
+			$this->load->model('User', 'user');
+			if ($this->user->can_delete($user_id)) {
+				if ($this->user->delete($user_id)) {
+					$this->session->set_flashdata('info', 'User '.$user_id.' was deleted.');
+				} else {
+					$this->session->set_flashdata('error', 'User '.$user_id.' could not be deleted.');
+				}
+			} else {
+				$this->session->set_flashdata('error', 'Admin user '.$user_id.' could not be deleted. Please change user level first.');
+			}
+			redirect(site_url('admin').'/users/index');
 			
 		}
 	}
