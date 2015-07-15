@@ -28,13 +28,13 @@
     <div class="mdl-card__title">
 	  <h1>Appointment Time Blocks</h1>
 	  <ul>
-    	<li><a href="<?php echo site_url('admin').'/schedules/'.$schedule['id'].'/timeblocks/add'; ?>">Add</a></li>
+    	<li><a href="<?php echo site_url('admin').'/timeblocks/add/'.$schedule['id']; ?>">Add</a></li>
     	<li><a href="#" id="action_delete">Delete</a></li>
       </ul>
     </div>
     <div class="mdl-card__supporting-text">
       <?php $attributes = array('id' => 'timeblocks_form'); ?>
-  	  <?php form_open(site_url('admin').'/timeblocks/action_perform', $attributes); ?>
+  	  <?php echo form_open(site_url('admin').'/timeblocks/action_perform/'.$schedule['id'], $attributes); ?>
   	  <input type="hidden" id="schedule_id" name="schedule_id" value="<?php echo $schedule['id']; ?>"></input>
   	  <input type="hidden" id="selected_action" name="selected_action" value=""></input>
       	<table class="mdl-data-table">
@@ -48,7 +48,7 @@
         <tbody>
         <?php foreach($timeblocks as $timeblock) { ?>
           <tr>
-          	<td><input type="checkbox" class="check_item" id="check_<?php echo $timeblock['id']; ?>" /></td>
+          	<td><input type="checkbox" class="check_item" name="item_<?php echo $timeblock->id; ?>" value="1"/></td>
             <td class="mdl-data-table__cell--non-numeric"><?php echo $timeblock->start_time_s() ?></td>
             <td class="mdl-data-table__cell--non-numeric"><?php echo $timeblock->finish_time_s(); ?></td>
           </tr>

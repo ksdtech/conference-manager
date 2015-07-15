@@ -62,8 +62,8 @@ class User extends Auth_model {
 	}
 	
 	public function all() {
-		return $this->db->get('users')
-		->order_by('last_name, first_name, user_email')
+		return $this->db->order_by('last_name, first_name, user_email')
+		->get('users')
 		->result_array();
 	}
 	

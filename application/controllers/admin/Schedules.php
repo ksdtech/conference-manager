@@ -84,14 +84,18 @@ class Schedules extends MY_Controller {
 			);
 			
 			$this->load->model('Schedule', 'schedule');
-			
+			$this->load->model('TimeBlock', 'timeblocks');
+				
 			$this->load->helper(array('form', 'url'));
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules($edit_schedule_rules);
 
 			if ($this->form_validation->run() == FALSE) {
 				
-				$data = $this->schedule->read($schedule_id);
+				$schedule = $this->schedule->read($schedule_id);
+				$timeblocks = $this->timeblocks->all($schedule_id);
+				$data = array('schedule' => $schedule, 'timeblocks' => $timeblocks);
+				
 				$this->load->template('admin/schedules_edit', $data);
 				
 			} else {

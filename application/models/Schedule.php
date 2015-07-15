@@ -43,15 +43,10 @@ class Schedule extends MY_Model {
 	}
 	
 	public function read($schedule_id) {
-		$schedule = $this->db->where('id', $schedule_id)
+		return $this->db->where('id', $schedule_id)
 		->limit(1)
 		->get('schedules')
 		->row_array();
-		$timeblocks = $this->db->where('schedule_id', $schedule_id)
-		->order_by('start_hour, start_minute')
-		->get('time_blocks')
-		->result_array();
-		return array('schedule' => $schedule, 'timeblocks' => $timeblocks);
 	}
 	
 	public function all() {

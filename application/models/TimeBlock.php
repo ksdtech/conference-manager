@@ -5,7 +5,41 @@ class TimeBlock extends MY_Model {
 	public function __construct() {
 		parent::__construct();
 	}
+	
+	public function start_time_s() {
+		$minutes = $this->start_hour*60 + $this->start_minute;
+		$hour = (int)($minutes/60) % 12;
+		$minute = $minutes % 60;
+		$ampm = ($minutes >= 60*12) ? 'pm' : 'am';
+		if ($hour == 0) {
+			$hour = 12;
+		}
+		
+		return sprintf("%d:%02d %s", $hour, $minute, $ampm);
+	}
 
+	public function finish_time_s() {
+		$minutes = $this->start_hour*60 + $this->start_minute + $this->duration_in_minutes;
+		$hour = (int)($minutes/60) % 12;
+		$minute = $minutes % 60;
+		$ampm = ($minutes >= 60*12) ? 'pm' : 'am';
+		if ($hour == 0) {
+			$hour = 12;
+		}
+
+		return sprintf("%d:%02d %s", $hour, $minute, $ampm);
+	}
+	
+	public function all($schedule_id) {
+		return $this->db->where('schedule_id', $schedule_id)
+			->order_by('start_hour, start_minute')
+			->get('time_blocks')->result('TimeBlock');
+	}
+	
+	public function delete($timeblock_id) {
+		return $this->db->where('id', $timeblock_id)->delete('time_blocks');
+	}
+	
 	public function validate_duration($text) {
 		$minutes = intval($text);
 		if ($minutes < 5 || $minutes > 120) {
@@ -15,7 +49,7 @@ class TimeBlock extends MY_Model {
 	}
 	
 	private function validate_time_element($time_element, &$error_message) {
-		$match = preg_match('/([\d]{1,2}):([\d]{2})\s*(am|pm)/', $time_element, $matches);
+		$match = preg_match('/([\d]{1,2}):([\d]{2})\s*(am|pm)/i', $time_element, $matches);
 		if ($match) {
 			$hour = intval($matches[1]);
 			$minutes = intval($matches[2]);
@@ -31,10 +65,32 @@ class TimeBlock extends MY_Model {
 			}
 			return $hour * 100 + $minutes;
 		} else {
-			$error_message = 'time must be hh:mm am';
+			$error_message = 'time must be hh:mm am. was '. $time_element;
 			return -1;
 		}
 	}
+	
+	private function checkForOverlap($TimeIntervalArray)
+	{
+		for ($i = 0; $i < count($TimeIntervalArray)-1; $i ++)
+		{
+			$TimeInterval1 = $TimeIntervalArray[$i];
+	
+			for ($j = 1; $j < count($TimeIntervalArray); $j ++)
+			{
+				$TimeInterval2 = $TimeIntervalArray[$j];
+					
+				if (($TimeInterval2[0] > $TimeInterval1[0] && $TimeInterval2[0] < $TimeInterval1[1]) ||
+						($TimeInterval2[1] < $TimeInterval1[1] && $TimeInterval2[1]>$TimeInterval1[0]))
+				{
+					return FALSE;
+				}
+					
+			}
+		}
+		return TRUE;
+	}
+	
 	
 	/* validate the text to specify the time blocks */
 	public function validate_tblocks($text, $arguments) {
@@ -63,10 +119,10 @@ class TimeBlock extends MY_Model {
 				break;
 			}
 		}
-		if ( $error_message == '') {
-			// make sure there's no overlap
-			// results = [0] => array(600, 1200)
-			//           [1] => array(1500, 1800)
+		if ( $error_message == '' && !$this->checkForOverlap($results) ) {
+			$error_message = 'your time blocks overlap.  Please fix it.';
+		}
+		if ( $error_message == '' ) {
 			if ($arguments[0] != 'FALSE') {
 				return $results;
 			} else {

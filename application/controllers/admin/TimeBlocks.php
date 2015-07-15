@@ -2,17 +2,26 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class TimeBlocks extends MY_Controller {
-
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/admin/users
-	 */
-	public function index() {
+		
+	public function action_perform($schedule_id) {
+		$this->load->model('TimeBlock', 'timeblock');
+		
+		$data = $this->input->post();
+		if ($data['selected_action'] == 'delete') {
+			foreach (array_keys($data) as $key) {
+				$match = preg_match('/^item_(.+)$/', $key, $matches);
+				if ($match) {
+					$timeblock_id = $matches[1];
+					if ($data[$key] == '1') {
+						$this->timeblock->delete($timeblock_id);
+					}
+				}
+			}
+		}
+		redirect(site_url('admin').'/schedules/edit/'.$schedule_id);
 	}
 	
-	public function add() {
+	public function add($schedule_id) {
 		$rules = array(
 			array(
 				'field' => 'duration',
@@ -41,15 +50,26 @@ class TimeBlocks extends MY_Controller {
 			$duration = intval($data['duration']);
 			$text = $data['time_blocks'];
 			$tb_array = $this->timeblock->validate_tblocks($text, TRUE);
-			// $tb_array = [0] => array(600, 1200), 
-			//		   [1] => array(1500, 1800)
-			// foreach...
-			// $block['schedule_id'] = 1
-			// $block['start_hour'] = 8
-			// $block['start_minute'] = 15
-			// $block['duration_in_minutes'] = $duration
-			$this->db->insert('time_blocks', $block);
-			redirect('admin/timeblocks/index');
+			
+			for ($i = 0; $i < count($tb_array); $i ++)
+			{
+				$current_time_interval = $tb_array[$i];
+				$start_time = ($current_time_interval[0] % 100) + (int)(($current_time_interval[0]/100)*60);
+				$end_time = ($current_time_interval[1] % 100) + (int)(($current_time_interval[1]/100)*60);
+			
+				for ($time =  $start_time; $time <= $end_time- $duration; $time += $duration)
+				{
+					$hour = (int)($time/60);
+					$minute = $time % 60;
+					$block = 
+							array("schedule_id" => $schedule_id,
+									"start_hour" => $hour,
+									"start_minute" => $minute,
+									"duration_in_minutes" => $duration);
+					$this->db->insert('time_blocks', $block);
+				}
+			}
+			redirect(site('admin').'/schedules/edit/'.$schedule_id);
 		}
 	}	
 }		
