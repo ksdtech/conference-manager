@@ -48,15 +48,14 @@ class Schedule extends MY_Model {
 		->get('schedules')
 		->row_array();
 		$timeblocks = $this->db->where('schedule_id', $schedule_id)
-		->get('time_blocks')
 		->order_by('start_hour, start_minute')
+		->get('time_blocks')
 		->result_array();
 		return array('schedule' => $schedule, 'timeblocks' => $timeblocks);
 	}
 	
 	public function all() {
-		return $this->db->get('schedules')
-		->order_by('name')
+		return $this->db->order_by('name')->get('schedules')
 		->result_array();
 	}
 	
@@ -80,5 +79,14 @@ class Schedule extends MY_Model {
 		$this->db->trans_complete();
 		
 		return $result;
+	}
+	
+	public function select_options() {
+		$options = array();
+		$schedules = $this->all();
+		foreach ($schedules as $schedule) {
+			$options[''.$schedule['id']] = $schedule['name'];
+		}
+		return $options;
 	}
 }

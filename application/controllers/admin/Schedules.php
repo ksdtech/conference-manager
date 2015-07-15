@@ -53,11 +53,11 @@ class Schedules extends MY_Controller {
 				$schedule_id = $this->schedule->create($this->input->post());
 				if ($schedule_id !== FALSE) {
 					$this->session->set_flashdata('info', 'Schedule '.$schedule_id.' was created.');
+					redirect(site_url('admin').'/schedules/edit/'.$schedule_id);
 				} else {
 					$this->session->set_flashdata('error', 'Schedule '.$schedule_id.' could not be created.');
+					redirect(site_url('admin').'/schedules/index');
 				}
-				redirect('/admin/schedules/index');
-				
 			}
 		}
 	}
@@ -100,7 +100,7 @@ class Schedules extends MY_Controller {
 				} else {
 					$this->session->set_flashdata('error', 'Schedule '.$schedule_id.' could not be updated.');
 				}
-				redirect('/admin/schedules/index');
+				redirect(site_url('admin').'/schedules/index');
 
 			}
 		}
@@ -120,7 +120,7 @@ class Schedules extends MY_Controller {
 			} else {
 				$this->session->set_flashdata('error', 'Schedule '.$schedule_id.' could not be deleted.');
 			}
-			redirect('/admin/schedules/index');
+			redirect(site_url('admin').'/schedules/index');
 			
 		}
 	}

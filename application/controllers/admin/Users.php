@@ -71,7 +71,7 @@ class Users extends MY_Controller {
 				} else {
 					$this->session->set_flashdata('error', 'User '.$user_id.' could not be created.');
 				}
-				redirect('/admin/users/index');
+				redirect(site_url('admin').'/users/index');
 				
 			}
 		}
@@ -131,7 +131,7 @@ class Users extends MY_Controller {
 				} else {
 					$this->session->set_flashdata('error', 'User '.$user_id.' could not be updated.');
 				}
-				redirect('/admin/users/index');
+				redirect(site_url('admin').'/users/index');
 
 			}
 		}
@@ -155,7 +155,7 @@ class Users extends MY_Controller {
 			} else {
 				$this->session->set_flashdata('error', 'Admin user '.$user_id.' could not be deleted. Please change user level first.');
 			}
-			redirect('/admin/users/index');
+			redirect(site_url('admin').'/users/index');
 			
 		}
 	}

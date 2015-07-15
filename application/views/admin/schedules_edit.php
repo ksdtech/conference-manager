@@ -7,10 +7,10 @@
 
     <div class="mdl-card__supporting-text">
 	<?php echo form_open(site_url('admin').'/schedules/edit/'.$schedule['id']); ?>
-		<div><label for="name">First name</label><br>
-    	<input type="text" id="name" name="name" value="<?php echo set_value('name', $schedule['name']); ?>"></div>
-		<div><label for="description">Last name</label><br>
-    	<textarea id="description" name="description"><?php echo set_value('description', $schedule['description']); ?></textarea></div>
+		<div><label for="name">Schedule name</label><br>
+    	<input type="text" id="name" name="name" size="40" value="<?php echo set_value('name', $schedule['name']); ?>"></div>
+		<div><label for="description">Description</label><br>
+    	<textarea id="description" name="description" cols="60" rows="3"><?php echo set_value('description', $schedule['description']); ?></textarea></div>
 		<div><label for="interval_in_minutes">Interval between appointments (minutes)</label><br>
     	<input type="text" id="interval_in_minutes" name="interval_in_minutes" value="<?php echo set_value('interval_in_minutes', $schedule['interval_in_minutes']); ?>"></div>
 		<div><label for="duration_in_minutes">Duration of each appointment (minutes)</label><br>

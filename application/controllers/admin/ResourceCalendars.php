@@ -46,7 +46,7 @@ class ResourceCalendars extends MY_Controller {
 				} else {
 					$this->session->set_flashdata('error', 'Resource calendar '.$resource_calendar_id.' could not be created.');
 				}
-				redirect('/admin/resource_calendars/index');
+				redirect(site_url('admin').'/resourcecalendars/index');
 				
 			}
 		}
@@ -80,7 +80,7 @@ class ResourceCalendars extends MY_Controller {
 				} else {
 					$this->session->set_flashdata('error', 'Resource calendar '.$resource_calendar_id.' could not be updated.');
 				}
-				redirect('/admin/resource_calendars/index');
+				redirect(site_url('admin').'/resourcecalendars/index');
 
 			}
 		}
@@ -100,7 +100,7 @@ class ResourceCalendars extends MY_Controller {
 			} else {
 				$this->session->set_flashdata('error', 'Resource calendar '.$resource_calendar_id.' could not be deleted.');
 			}
-			redirect('/admin/resource_calendars/index');
+			redirect(site_url('admin').'/resourcecalendars/index');
 		}
 	}
 }

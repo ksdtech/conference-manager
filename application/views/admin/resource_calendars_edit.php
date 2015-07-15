@@ -7,9 +7,9 @@
 
     <div class="mdl-card__supporting-text">
 	<?php echo form_open(site_url('admin').'/resourcecalendars/edit/'.$calendar['id']); ?>
-		<div><label for="name">First name</label><br>
-    	<input type="text" id="name" name="name" value="<?php echo set_value('name', $calendar['name']); ?>"></div>
-		<div><label for="description">Last name</label><br>
+		<div><label for="name">Calendar name</label><br>
+    	<input type="text" id="name" name="name" size="40" value="<?php echo set_value('name', $calendar['name']); ?>"></div>
+		<div><label for="description" cols="60" rows="3">Description</label><br>
     	<textarea id="description" name="description"><?php echo set_value('description', $calendar['description']); ?></textarea></div>
     	<div><input type="submit" value="Submit" /></div>
 	</form>

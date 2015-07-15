@@ -31,8 +31,7 @@ class ResourceCalendar extends MY_Model {
 	}
 	
 	public function all() {
-		return $this->db->get('resource_calendars')
-		->order_by('name')
+		return $this->db->order_by('name')->get('resource_calendars')
 		->result_array();
 	}
 	
@@ -53,5 +52,14 @@ class ResourceCalendar extends MY_Model {
 		$this->db->trans_complete();
 		
 		return $result;
+	}
+	
+	public function select_options() {
+		$options = array();
+		$calendars = $this->all();
+		foreach ($calendars as $calendar) {
+			$options[''.$calendar['id']] = $calendar['name'];
+		}
+		return $options;
 	}
 }
