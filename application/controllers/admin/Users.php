@@ -65,7 +65,8 @@ class Users extends MY_Controller {
 			if ( $this->form_validation->run() == FALSE ) {
 				$this->load->template('admin/users_add');
 			} else {
-				if ($this->user->create($this->input->post())) {
+				$user_id = $this->user->create($this->input->post());
+				if ($user_id !== FALSE) {
 					$this->session->set_flashdata('info', 'User '.$user_id.' was created.');
 				} else {
 					$this->session->set_flashdata('error', 'User '.$user_id.' could not be created.');

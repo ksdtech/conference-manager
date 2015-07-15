@@ -42,11 +42,16 @@ class User extends Auth_model {
 		$data['user_date']     = date('Y-m-d H:i:s');
 		$data['user_modified'] = date('Y-m-d H:i:s');
 		
+		$user_id = FALSE;
+
+		$this->db->trans_start();
 		$this->db->insert('users', $data);
 		if ($this->db->affected_rows() == 1) {
-			return $data['user_id'];
+			$user_id = $data['user_id'];
 		}
-		return FALSE;
+		$this->db->trans_complete();
+
+		return user_id;
 	}
 	
 	public function read($user_id) {
@@ -57,7 +62,9 @@ class User extends Auth_model {
 	}
 	
 	public function all() {
-		return $this->db->get('users')->result_array();
+		return $this->db->get('users')
+		->order_by('last_name, first_name, user_email')
+		->result_array();
 	}
 	
 	public function update($user_id, $post_data) {
