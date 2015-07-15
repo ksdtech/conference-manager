@@ -145,8 +145,16 @@ class Users extends MY_Controller {
 	public function delete($user_id) {
 		
 		if ($this->require_role('admin')) {
-			
-			$this->session->set_flashdata('info', 'User '.$user_id.' would have been deleted.');
+			$this->load->model('User', 'user');
+			if ($this->user->can_delete($user_id)) {
+				if ($this->user->delete($user_id)) {
+					$this->session->set_flashdata('info', 'User '.$user_id.' was deleted.');
+				} else {
+					$this->session->set_flashdata('error', 'User '.$user_id.' could not be deleted.');
+				}
+			} else {
+				$this->session->set_flashdata('error', 'Admin user '.$user_id.' could not be deleted. Please change user level first.');
+			}
 			redirect('/admin/users/index');
 			
 		}

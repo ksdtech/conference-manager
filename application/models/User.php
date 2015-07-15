@@ -84,6 +84,11 @@ class User extends Auth_model {
 		->update('users', $data);
 	}
 	
+	public function can_delete($user_id) {
+		$user = $this->read($user_id);
+		return ($user && $user['user_level'] < 9);
+	}
+	
 	public function delete($user_id) {
 		return $this->db->where('user_id', $user_id)->delete('users');
 	}

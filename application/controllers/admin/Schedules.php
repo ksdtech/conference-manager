@@ -27,7 +27,7 @@ class Schedules extends MY_Controller {
 					array(
 							'field' => 'name',
 							'label' => 'Name',
-							'rules' => 'required'
+							'rules' => 'trim|required|is_unique[schedules.name]'
 					),
 					array(
 							'field' => 'interval_in_minutes',
@@ -38,7 +38,7 @@ class Schedules extends MY_Controller {
 							'field' => 'duration_in_minutes',
 							'label' => 'Duration',
 							'rules' => 'required|numeric'
-					),
+					)
 			);
 			
 			$this->load->model('Schedule', 'schedule');
@@ -69,7 +69,7 @@ class Schedules extends MY_Controller {
 					array(
 							'field' => 'name',
 							'label' => 'Name',
-							'rules' => 'required'
+							'rules' => 'trim|required|edit_unique[schedules.name.id.'.$schedule_id.']'
 					),
 					array(
 							'field' => 'interval_in_minutes',
@@ -80,7 +80,7 @@ class Schedules extends MY_Controller {
 							'field' => 'duration_in_minutes',
 							'label' => 'Duration',
 							'rules' => 'required|numeric'
-					),
+					)
 			);
 			
 			$this->load->model('Schedule', 'schedule');
