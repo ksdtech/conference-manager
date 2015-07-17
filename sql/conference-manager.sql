@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS `login_errors`;
 DROP TABLE IF EXISTS `denied_access`;
 DROP TABLE IF EXISTS `username_or_email_on_hold`;
 DROP TABLE IF EXISTS `users`;
-DROP TABLE IF EXISTS `appointment_days`;
+DROP TABLE IF EXISTS `preferences`;
 DROP TABLE IF EXISTS `reservations`;
 DROP TABLE IF EXISTS `resource_calendars`;
 DROP TABLE IF EXISTS `resource_group_members`;
@@ -15,10 +15,11 @@ DROP TABLE IF EXISTS `resource_groups`;
 DROP TABLE IF EXISTS `resource_managers`;
 DROP TABLE IF EXISTS `resource_types`;
 DROP TABLE IF EXISTS `resources`;
+DROP TABLE IF EXISTS `schedule_times`;
+DROP TABLE IF EXISTS `scheduled_days`;
 DROP TABLE IF EXISTS `scheduled_resources`;
-DROP TABLE IF EXISTS `scheduled_slots`;
+DROP TABLE IF EXISTS `scheduled_exceptions`;
 DROP TABLE IF EXISTS `schedules`;
-DROP TABLE IF EXISTS `time_blocks`;
 DROP TABLE IF EXISTS `user_contacts`;
 
 -- Community Auth - MySQL table install
@@ -87,26 +88,17 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- conference-manager - MySQL table install
+CREATE TABLE IF NOT EXISTS `preferences` (
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `name` varchar(20) NOT NULL,
+ `value` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE UNIQUE INDEX `prefs_name` ON `preferences` (`name`);
+INSERT INTO `preferences` (`name`,`value`) VALUES ('durations', '5,10,15,20,25,30,35,40,45,60,90,120');
 
 -- resource_calendar is for a specific event series
 -- like "2015 Bacich Intake Conferences"
-CREATE TABLE IF NOT EXISTS `resource_calendars` (
- `id` int(10) unsigned NOT NULL auto_increment,
- `resource_type_id` int(10) unsigned NOT NULL,
- `name` varchar(40) NOT NULL,
- `description` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
-CREATE UNIQUE INDEX `rcal_name` ON `resource_calendars` (`name`);
-
-CREATE TABLE IF NOT EXISTS `appointment_days` (
- `id` int(10) unsigned NOT NULL auto_increment,
- `schedule_id` int(10) unsigned NOT NULL,
- `resource_calendar_id` int(10) unsigned NOT NULL,
- `schedule_date` date NOT NULL, 
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
-
 CREATE TABLE IF NOT EXISTS `schedules` (
  `id` int(10) unsigned NOT NULL auto_increment,
  `name` varchar(40) NOT NULL,
@@ -117,14 +109,16 @@ CREATE TABLE IF NOT EXISTS `schedules` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 CREATE UNIQUE INDEX `sched_name` ON `schedules` (`name`);
 
-CREATE TABLE IF NOT EXISTS `time_blocks` (
+CREATE TABLE IF NOT EXISTS `schedule_times` (
  `id` int(10) unsigned NOT NULL auto_increment,
  `schedule_id` int(10) unsigned NOT NULL,
- `start_hour` tinyint(3) unsigned NOT NULL,
- `start_minute` tinyint(3) unsigned NOT NULL,
- `duration_in_minutes` smallint(5) unsigned NOT NULL,
+ `time_start` varchar(8) NOT NULL,
+ `time_end` varchar(8) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE INDEX `stim_schd`  ON `schedule_times` (`schedule_id`);
+CREATE INDEX `stim_tstr`  ON `schedule_times` (`time_start`);
+CREATE INDEX `stim_tend`  ON `schedule_times` (`time_end`);
 
 CREATE TABLE IF NOT EXISTS `user_contacts` (
  `id` int(10) unsigned NOT NULL auto_increment,
@@ -170,6 +164,8 @@ CREATE TABLE IF NOT EXISTS `resource_group_members` (
  `resource_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE INDEX `rmem_rgrp` ON `resource_group_members` (`resource_group_id`);
+CREATE INDEX `rmem_rsrc` ON `resource_group_members` (`resource_id`);
 
 CREATE TABLE IF NOT EXISTS `resource_managers` (
  `id` int(10) unsigned NOT NULL auto_increment,
@@ -177,22 +173,72 @@ CREATE TABLE IF NOT EXISTS `resource_managers` (
  `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE INDEX `rmgr_rsrc` ON `resource_managers` (`resource_id`);
+CREATE INDEX `rmgr_user` ON `resource_managers` (`user_id`);
 
-CREATE TABLE IF NOT EXISTS `scheduled_slots` (
+CREATE TABLE IF NOT EXISTS `resource_calendars` (
  `id` int(10) unsigned NOT NULL auto_increment,
- `appointment_day_id` int(10) unsigned NOT NULL,
- `time_block_id` int(10) unsigned NOT NULL,
- `resource_id` int(10) unsigned NOT NULL,
  `resource_type_id` int(10) unsigned NOT NULL,
- `location` varchar(40) NOT NULL,
- `available` tinyint(3) unsigned NOT NULL,
+ `name` varchar(40) NOT NULL,
+ `description` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE UNIQUE INDEX `rcal_name` ON `resource_calendars` (`name`);
+CREATE INDEX `rcal_rtyp` ON `resource_calendars` (`resource_type_id`);
+
+CREATE TABLE IF NOT EXISTS `scheduled_days` (
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `schedule_id` int(10) unsigned NOT NULL,
+ `resource_calendar_id` int(10) unsigned NOT NULL,
+ `schedule_date` date NOT NULL, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE INDEX `sday_schd` ON `scheduled_days` (`schedule_id`);
+CREATE INDEX `sday_rcal` ON `scheduled_days` (`resource_calendar_id`);
+CREATE INDEX `sday_date` ON `scheduled_days` (`schedule_date`);
+
+CREATE TABLE IF NOT EXISTS `scheduled_resources` (
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `scheduled_day_id` int(10) unsigned NOT NULL,
+ `resource_id` int(10) unsigned NOT NULL,
+ `resource_type_id` int(10) unsigned NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE INDEX `srsrc_sday` ON `scheduled_resources` (`scheduled_day_id`);
+CREATE INDEX `srsrc_rsrc` ON `scheduled_resources` (`resource_id`);
+CREATE INDEX `srsrc_rtyp` ON `scheduled_resources` (`resource_type_id`);
+
+-- status is 
+--   'A' - added
+--   'D' - deleted
+--   'L' - changed location
+CREATE TABLE IF NOT EXISTS `scheduled_exceptions` (
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `scheduled_resource_id` int(10) unsigned NOT NULL,
+ `time_start` varchar(8) NOT NULL,
+ `time_end` varchar(8) NOT NULL,
+ `location` varchar(40) NOT NULL,
+ `status` varchar(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE INDEX `sexc_rsrc` ON `scheduled_exceptions` (`scheduled_resource_id`);
+CREATE INDEX `sexc_tstr` ON `scheduled_exceptions` (`time_start`);
+CREATE INDEX `sexc_tend` ON `scheduled_exceptions` (`time_end`);
+CREATE INDEX `sexc_stat` ON `scheduled_exceptions` (`status`);
 
 CREATE TABLE IF NOT EXISTS `reservations` (
  `id` int(10) unsigned NOT NULL auto_increment,
- `scheduled_slot_id` int(10) unsigned NOT NULL,
+ `scheduled_resource_id` int(10) unsigned NOT NULL,
+ `time_start` varchar(8) NOT NULL,
+ `time_end` varchar(8) NOT NULL,
  `user_id` int(10) unsigned NOT NULL,
+ `created_at` datetime,
+ `updated_at` datetime,
  `last_notified_at` datetime,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE INDEX `resv_srsrc` ON `reservations` (`scheduled_resource_id`);
+CREATE INDEX `resv_tstr`  ON `reservations` (`time_start`);
+CREATE INDEX `resv_tend`  ON `reservations` (`time_end`);
+CREATE INDEX `resv_user`  ON `reservations` (`user_id`);
+CREATE INDEX `resv_notf`  ON `reservations` (`last_notified_at`);

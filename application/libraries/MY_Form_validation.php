@@ -27,7 +27,7 @@ class MY_Form_validation extends CI_Form_validation {
 	 */
 	public function edit_unique($str, $field)
 	{
-		$this->set_message('edit_unique', "Sorry, that %s is already being used.");
+		$this->set_message('edit_unique', 'The %s field must contain a unique value.');
 		
 		sscanf($field, '%[^.].%[^.].%[^.].%[^.]', $table, $field, $key_field, $current_id);
 		if (isset($this->CI->db)) {
@@ -35,6 +35,22 @@ class MY_Form_validation extends CI_Form_validation {
 			return (!$row || $row[$key_field] == $current_id);
 		}
 		return FALSE;
+	}
+	
+	/**
+	 * One field must be numerically less than or equal to another
+	 *
+	 * @param	string	$str	string to compare against
+	 * @param	string	$field
+	 * @return	bool
+	 */
+	public function less_than_equal_to_field($str, $field)
+	{
+		$this->set_message('less_than_equal_to_field', 'The %s field must be less than the value of the '.$field.' field');
+	
+		return isset($this->_field_data[$field], $this->_field_data[$field]['postdata'])
+		? (intval($str) <= intval($this->_field_data[$field]['postdata']))
+		: FALSE;
 	}
 	
 	/**

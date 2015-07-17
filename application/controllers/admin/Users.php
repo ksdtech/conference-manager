@@ -103,12 +103,12 @@ class Users extends MY_Controller {
 			$email    = urldecode( $email );
 			$password = urldecode( $password );
 			$data = array(
-					'first_name'   => $first_name,
-					'last_name'    => $last_name,
-					'user_email'   => $email,
-					'user_pass'    => $password,
-					'confirm_pass' => $password,
-					'user_level'   => $user_level
+				'first_name'   => $first_name,
+				'last_name'    => $last_name,
+				'user_email'   => $email,
+				'user_pass'    => $password,
+				'confirm_pass' => $password,
+				'user_level'   => $user_level
 			);
 			$this->do_add( TRUE, $data );
 		} else {
@@ -120,36 +120,36 @@ class Users extends MY_Controller {
 		
 		if ($this->require_role('admin')) {	
 			$edit_user_rules = array(
-					array(
-							'field' => 'first_name',
-							'label' => 'First name',
-							'rules' => 'required'
-					),
-					array(
-							'field' => 'last_name',
-							'label' => 'Last name',
-							'rules' => 'required'
-					),
-					array(
-							'field' => 'user_pass',
-							'label' => 'Password',
-							'rules' => 'trim|external_callbacks[model,formval_callbacks,_check_password_strength,FALSE]',
-					),
-					array(
-							'field' => 'confirm_pass',
-							'label' => 'Password confirmation',
-							'rules' => 'matches[user_pass]',
-					),
-					array(
-							'field' => 'user_email',
-							'label' => 'Email address',
-							'rules' => 'trim|required|valid_email|edit_unique[users.user_email.user_id.'.$user_id.']'
-					),
-					array(
-							'field' => 'user_level',
-							'label' => 'Level',
-							'rules' => 'required|integer|in_list[1,6,9]'
-					)
+				array(
+					'field' => 'first_name',
+					'label' => 'First name',
+					'rules' => 'required'
+				),
+				array(
+					'field' => 'last_name',
+					'label' => 'Last name',
+					'rules' => 'required'
+				),
+				array(
+					'field' => 'user_pass',
+					'label' => 'Password',
+					'rules' => 'trim|external_callbacks[model,formval_callbacks,_check_password_strength,FALSE]',
+				),
+				array(
+					'field' => 'confirm_pass',
+					'label' => 'Password confirmation',
+					'rules' => 'matches[user_pass]',
+				),
+				array(
+					'field' => 'user_email',
+					'label' => 'Email address',
+					'rules' => 'trim|required|valid_email|edit_unique[users.user_email.user_id.'.$user_id.']'
+				),
+				array(
+					'field' => 'user_level',
+					'label' => 'Level',
+					'rules' => 'required|integer|in_list[1,6,9]'
+				)
 			);
 			
 			$this->load->model('User', 'user');
@@ -194,8 +194,8 @@ class Users extends MY_Controller {
 			} else {
 				$this->session->set_flashdata('error', 'Admin user '.$user_id.' could not be deleted. Please change user level first.');
 			}
-			redirect(site_url('admin').'/users/index');
 			
+			redirect(site_url('admin').'/users/index');
 		}
 	}
 	
@@ -223,6 +223,23 @@ class Users extends MY_Controller {
 		return $id;
 	}
 
+	private function add_resource_manager($resource_id, $user_id) {
+		$manager_id = FALSE;
+		$data = array('resource_id' => $resource_id, 'user_id' => $user_id);
+		$id_array = $this->db->select('id')->limit(1)->where($data)->get('resource_managers')->row_array();
+		if (count($id_array) > 0) {
+			$manager_id = $id_array['id'];
+		} else {
+			$this->db->trans_start();
+			$this->db->insert('resource_managers', $data);
+			if ($this->db->affected_rows() == 1) {
+				$manager_id = $this->db->insert_id();
+			}
+			$this->db->trans_complete();
+		}
+		return $manager_id;
+	}
+	
 	private function add_group_member($resource_group_id, $resource_id) {
 		$member_id = FALSE;
 		$data = array('resource_group_id' => $resource_group_id, 'resource_id' => $resource_id);
@@ -280,6 +297,12 @@ class Users extends MY_Controller {
 			return FALSE;
 		}
 		
+		$manager_id = $this->add_resource_manager($resource_id, $user_id);
+		if (!$manager_id) {
+			$error_message .= 'Line '.$line_no.', could not add manager to resource '.$full_name;
+			return FALSE;
+		}
+		
 		$resource_type_id = $this->find_or_create_by_name('resource_types', $row['resource_type']);
 		if (!$resource_type_id) {
 			$error_message .= 'Line '.$line_no.', could not find or create resource type '.$row['resource_type'];
@@ -309,10 +332,10 @@ class Users extends MY_Controller {
 	
 	public function upload_users() {
 		$config = array(
-				'upload_path'   => $this->config->item('upload_path'),
-				'allowed_types' => 'csv',
-				'overwrite'     => TRUE,
-				'remove_spaces' => TRUE
+			'upload_path'   => $this->config->item('upload_path'),
+			'allowed_types' => 'csv',
+			'overwrite'     => TRUE,
+			'remove_spaces' => TRUE
 		);
 		$this->load->library('upload', $config);
 		

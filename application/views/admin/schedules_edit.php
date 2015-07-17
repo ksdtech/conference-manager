@@ -11,10 +11,10 @@
     	<input type="text" id="name" name="name" size="40" value="<?php echo set_value('name', $schedule['name']); ?>"></div>
 		<div><label for="description">Description</label><br>
     	<textarea id="description" name="description" cols="60" rows="3"><?php echo set_value('description', $schedule['description']); ?></textarea></div>
-		<div><label for="interval_in_minutes">Interval between appointments (minutes)</label><br>
-    	<input type="text" id="interval_in_minutes" name="interval_in_minutes" value="<?php echo set_value('interval_in_minutes', $schedule['interval_in_minutes']); ?>"></div>
-		<div><label for="duration_in_minutes">Duration of each appointment (minutes)</label><br>
-    	<input type="text" id="duration_in_minutes" name="duration_in_minutes" value="<?php echo set_value('duration_in_minutes', $schedule['duration_in_minutes']); ?>"></div>
+		<div><label for="interval">Interval between appointments (minutes)</label><br>
+		<?php echo form_dropdown('interval', $interval_options, set_value('interval', strval($schedule['interval_in_minutes'])), 'id="interval"'); ?>
+		<div><label for="duration">Duration in minutes</label><br>
+		<?php echo form_dropdown('duration', $duration_options, set_value('duration', strval($schedule['duration_in_minutes'])), 'id="duration"'); ?>
     	<div><input type="submit" value="Submit" /></div>
 	</form>
 	<a href="<?php echo site_url('admin').'/schedules/index'; ?>">Cancel</a>
@@ -24,11 +24,12 @@
 
 <section class="section--center mdl-grid">
   <div class="mdl-card">
-  	<?php $attributes = array('id' => 'user_form'); ?>
     <div class="mdl-card__title">
-	  <h1>Appointment Time Blocks</h1>
+	  <h1>Appointment Times</h1>
 	  <ul>
-    	<li><a href="<?php echo site_url('admin').'/timeblocks/add/'.$schedule['id']; ?>">Add</a></li>
+    	<li><a href="<?php echo site_url('admin').'/timeblocks/add/'.$schedule['id']
+    		.'/interval/'.$schedule['interval_in_minutes']
+    		.'/duration/'.$schedule['duration_in_minutes']; ?>">Add</a></li>
     	<li><a href="#" id="action_delete">Delete</a></li>
       </ul>
     </div>
@@ -49,8 +50,8 @@
         <?php foreach($timeblocks as $timeblock) { ?>
           <tr>
           	<td><input type="checkbox" class="check_item" name="item_<?php echo $timeblock->id; ?>" value="1"/></td>
-            <td class="mdl-data-table__cell--non-numeric"><?php echo $timeblock->start_time_s() ?></td>
-            <td class="mdl-data-table__cell--non-numeric"><?php echo $timeblock->finish_time_s(); ?></td>
+            <td class="mdl-data-table__cell--non-numeric"><?php echo $timeblock->time_start_ampm() ?></td>
+            <td class="mdl-data-table__cell--non-numeric"><?php echo $timeblock->time_end_ampm(); ?></td>
           </tr>
         <?php } ?>
         </tbody>

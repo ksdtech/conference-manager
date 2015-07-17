@@ -78,3 +78,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <?php } ?>
 
 <div id="container">
+<ul>
+	<li><a href="<?php echo site_url('admin').'/resources'; ?>">Manage Resources</a> [NOT IMPLEMENTED]</li>
+	<li><a href="<?php echo site_url('admin').'/schedules'; ?>">Manage Schedules</a></li>
+	<li><a href="<?php echo site_url('admin').'/mastercalendar'; ?>">Manage Calendars</a></li>
+	<li><a href="<?php echo site_url('admin').'/users'; ?>">Manage Users</a></li>
+	<li><a href="<?php echo site_url('admin').'/users'; ?>">Manage Preferences</a> [NOT IMPLEMENTED]</li>
+</ul>

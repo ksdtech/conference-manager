@@ -47,7 +47,7 @@ class ResourceCalendar extends MY_Model {
 		$result = FALSE;
 		
 		$this->db->trans_start();
-		$this->db->where('resource_calendar_id', $resource_calendar_id)->delete('appointment_days');
+		$this->db->where('resource_calendar_id', $resource_calendar_id)->delete('scheduled_days');
 		$result = $this->db->where('id', $resource_calendar_id)->delete('resource_calendars');
 		$this->db->trans_complete();
 		

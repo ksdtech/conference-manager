@@ -30,25 +30,31 @@ class Schedules extends MY_Controller {
 							'rules' => 'trim|required|is_unique[schedules.name]'
 					),
 					array(
-							'field' => 'interval_in_minutes',
+							'field' => 'interval',
 							'label' => 'Interval',
-							'rules' => 'required|numeric'
+							'rules' => 'trim|required|numeric|greater_than_equal_to[5]|less_than_equal_to[120]'
+				
 					),
 					array(
-							'field' => 'duration_in_minutes',
+							'field' => 'duration',
 							'label' => 'Duration',
-							'rules' => 'required|numeric'
+							'rules' => 'trim|required|numeric|less_than_equal_to_field[interval]'
 					)
 			);
 			
 			$this->load->model('Schedule', 'schedule');
-			$this->load->helper(array('form', 'url'));
-			
+			$this->load->model('TimeBlock', 'timeblock');
+			$this->load->helper(array('form', 'url'));	
 			$this->load->library('form_validation');
+			
 			$this->form_validation->set_rules($add_schedule_rules);
 			
 			if ( $this->form_validation->run() == FALSE ) {
-				$this->load->template('admin/schedules_add');
+				$data = array(
+					'interval_options' => $this->timeblock->get_duration_options('Select'),
+					'duration_options' => $this->timeblock->get_duration_options('Same as interval')
+				);
+				$this->load->template('admin/schedules_add', $data);
 			} else {
 				$schedule_id = $this->schedule->create($this->input->post());
 				if ($schedule_id !== FALSE) {
@@ -72,29 +78,35 @@ class Schedules extends MY_Controller {
 							'rules' => 'trim|required|edit_unique[schedules.name.id.'.$schedule_id.']'
 					),
 					array(
-							'field' => 'interval_in_minutes',
+							'field' => 'interval',
 							'label' => 'Interval',
-							'rules' => 'required|numeric'
+							'rules' => 'trim|required|numeric|greater_than_equal_to[5]|less_than_equal_to[120]'
+							
 					),
 					array(
-							'field' => 'duration_in_minutes',
+							'field' => 'duration',
 							'label' => 'Duration',
-							'rules' => 'required|numeric'
+							'rules' => 'trim|required|numeric|less_than_equal_to_field[interval]'
 					)
 			);
 			
 			$this->load->model('Schedule', 'schedule');
-			$this->load->model('TimeBlock', 'timeblocks');
-				
+			$this->load->model('TimeBlock', 'timeblock');
 			$this->load->helper(array('form', 'url'));
 			$this->load->library('form_validation');
+			
 			$this->form_validation->set_rules($edit_schedule_rules);
 
 			if ($this->form_validation->run() == FALSE) {
 				
 				$schedule = $this->schedule->read($schedule_id);
-				$timeblocks = $this->timeblocks->all($schedule_id);
-				$data = array('schedule' => $schedule, 'timeblocks' => $timeblocks);
+				$timeblocks = $this->timeblock->all($schedule_id);
+				$data = array(
+					'schedule' => $schedule,
+					'timeblocks' => $timeblocks,
+					'interval_options' => $this->timeblock->get_duration_options('Select'),
+					'duration_options' => $this->timeblock->get_duration_options('Same as interval')
+				);
 				
 				$this->load->template('admin/schedules_edit', $data);
 				
@@ -104,8 +116,8 @@ class Schedules extends MY_Controller {
 				} else {
 					$this->session->set_flashdata('error', 'Schedule '.$schedule_id.' could not be updated.');
 				}
+				
 				redirect(site_url('admin').'/schedules/index');
-
 			}
 		}
 	}
