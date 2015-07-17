@@ -39,6 +39,16 @@
   </div>
 </section>
 
+<section class="section--center mdl-grid">
+  <div class="mdl-card">
+    <?php echo form_open_multipart(site_url('admin').'/users/upload_users'); ?>
+	  <div><label for="userfile">CSV file to upload</label><br>
+      <input type="file" id="userfile" name="userfile" size="20" />
+      <div><input type="submit" value="Submit" /></div>
+    </form>
+  </div>
+</section>
+
 <script>
 $().ready(function() {
 	$('#check_group').on('click', function() {

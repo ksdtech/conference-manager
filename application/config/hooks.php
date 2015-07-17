@@ -11,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |	http://codeigniter.com/user_guide/general/hooks.html
 |
 */
-// community_auth
+// Community Auth
 $hook['pre_system'] = array(
 		'function' => 'auth_constants',
 		'filename' => 'auth_constants.php',

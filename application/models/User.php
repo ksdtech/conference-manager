@@ -51,7 +51,7 @@ class User extends Auth_model {
 		}
 		$this->db->trans_complete();
 
-		return user_id;
+		return $user_id;
 	}
 	
 	public function read($user_id) {
@@ -59,6 +59,20 @@ class User extends Auth_model {
 		->limit(1)
 		->get('users')
 		->row_array();
+	}
+	
+	public function find_or_create_by_email($data) {
+		$user_id = FALSE;
+		$id_array = $this->db->select('user_id')
+			->limit(1)
+			->get_where('users', array('user_email' => $data['user_email']))
+			->row_array();
+		if (count($id_array) > 0) {
+			$user_id = $id_array['user_id'];
+		} else {
+			$user_id = $this->create($data);
+		}
+		return $user_id;
 	}
 	
 	public function all() {

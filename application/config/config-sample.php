@@ -13,6 +13,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $config['default_layout'] = 'application';
 
 /*
+ |--------------------------------------------------------------------------
+ | Uploads
+ |--------------------------------------------------------------------------
+ |
+ | Directory with 777 access
+ |
+ */
+$config['upload_path'] = '/path/to/uploads/';
+
+/*
 |--------------------------------------------------------------------------
 | Base Site URL
 |--------------------------------------------------------------------------
@@ -105,7 +115,7 @@ $config['charset'] = 'UTF-8';
 | setting this variable to TRUE (boolean).  See the user guide for details.
 |
 */
-// community_auth
+// Community Auth
 $config['enable_hooks'] = TRUE;
 
 /*
@@ -313,7 +323,7 @@ $config['cache_query_string'] = FALSE;
 | http://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-// community_auth. Generate key at http://randomkeygen.com/
+// Community Auth. Generate key at http://randomkeygen.com/
 $config['encryption_key'] = 'a32characterstringtoencryptdata!';
 
 /*
@@ -368,7 +378,7 @@ $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 7200;
 
-// community_auth
+// Community Auth
 $config['sess_save_path'] = '/path/to/session/files';
 
 $config['sess_match_ip'] = FALSE;

@@ -53,5 +53,6 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-// community_auth
-$route[LOGIN_PAGE] = 'examples/login';
+// Custom login controller - see http://community-auth.com/blog-posts/the-login-form
+// LOGIN_PAGE is a constant defined in application/hooks/auth_constants.php
+$route[LOGIN_PAGE] = 'auth/login';
