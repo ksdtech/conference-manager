@@ -58,7 +58,7 @@ $autoload['packages'] = array(APPPATH.'third_party/community_auth');
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-// community_auth
+// Community Auth
 $autoload['libraries'] = array('database', 'session', 'tokens', 'Authentication');
 
 /*
@@ -84,7 +84,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-// community_auth
+// Community Auth
 $autoload['helper'] = array('serialization', 'url', 'form', 'cookie');
 
 /*
@@ -99,7 +99,7 @@ $autoload['helper'] = array('serialization', 'url', 'form', 'cookie');
 | config files.  Otherwise, leave it blank.
 |
 */
-// community_auth
+// Community Auth
 $autoload['config'] = array('db_tables', 'authentication');
 
 /*
@@ -129,5 +129,5 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-// community_auth
+// Community Auth
 $autoload['model'] = array('auth_model');

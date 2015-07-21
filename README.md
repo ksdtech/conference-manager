@@ -33,12 +33,18 @@ Download the latest stable package, unzip it, and copy the application/third_par
 folder and all its subfolders to the the application/third_party folder of the conference manager
 project.
 
-7. Create an admin user in the database by going to the special URL 
+7. Create an admin user in the database using the command line. Change to the project directory,
+then enter: 
 
-<base_url>/index.php/examples/create_user
+php index.php admin/users add_cli <first_name> <last_name> <url_encoded_email> <password> 9
 
-The user will be created with the username, password and email address hard-coded in the file
-application/controllers/Examples.php.  After creating this user, you can edit the username,
-password and email address by going to 
+The user will be created with the username, password and email address passed to the add_cli
+method in the admin/users controller. Note that the email and password must be URL-safe 
+(for instance the '@' character in the email address must be encoded as '%40').  The '9'
+specifies the admin user level (this script can be used to create regular users also).
+
+8. Check that the user was created by going to the URL:
 
 <base_url>/index.php/admin/users
+
+
