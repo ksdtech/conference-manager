@@ -9,6 +9,7 @@ class Resource extends MY_Model {
 	public function create($post_data) {
 		$data['name']          = $post_data['name'];
 		$data['description']   = $post_data['description'];
+		$data['default_location']   = $post_data['default_location'];
 		
 		$resource_id = FALSE;
 
@@ -19,7 +20,7 @@ class Resource extends MY_Model {
 		}
 		$this->db->trans_complete();
 
-		return $resource_calendar_id;
+		return $resource_id;
 	}
 	
 	
@@ -32,12 +33,44 @@ class Resource extends MY_Model {
 	
 	public function all() {
 		return $this->db->order_by('name')->get('resources')
-		->result_array();
+		->result('Resource');
 	}
 	
-	public function update($resource_calendar_id, $post_data) {
+	public function group_class_names() {
+		$groups = $this->db->select('resource_group_id')
+		->join('resources', 'resources.id=resource_group_members.resource_id')
+		->where('resources.id', $this->id)
+		->get('resource_group_members')->result_array();
+		$class_names = '';
+		foreach($groups as $group) {
+			$class_names .= ' group_' . $group['resource_group_id'];
+		}
+		return $class_names;
+	}
+	
+	public function is_on_calendar($resource_calendar_id)
+	{
+	   	$num_results = $this->db->where(array("resource_calendar_id" => $resource_calendar_id, "resource_id" => $this->id))->get("calendar_resources")->num_rows();
+	    
+	   	if ($num_results == 1)
+	   	{
+	   		return true;
+	   	}
+	   	else if ($num_results > 1)
+	   	{
+	   		die("This resource is already associated with this resource calendar");
+	   	}
+	   	else
+	   	{
+	   		return false;
+	   	}
+	
+	}
+	
+	public function update($resource_id, $post_data) {
 		$data['name']          = $post_data['name'];
 		$data['description']   = $post_data['description'];
+		$data['default_location']   = $post_data['default_location'];
 		
 		return $this->db->where('id', $resource_id)
 		->update('resources', $data);

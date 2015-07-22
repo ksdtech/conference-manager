@@ -19,11 +19,11 @@
           </tr>
         </thead>
         <tbody>
-        <?php foreach($calendars as $calendar) { ?>
+        <?php foreach($resourcetypes as $resourcetype) { ?>
           <tr>
-          	<td><input type="checkbox" class="check_item" id="check_<?php echo $calendar['id']; ?>" /></td>
-            <td class="mdl-data-table__cell--non-numeric"><?php echo $calendar['name']; ?></td>
-            <td><a href="<?php echo site_url('admin').'/resourcetypes/edit/'.$calendar['id']; ?>">Edit</a></td>
+          	<td><input type="checkbox" class="check_item" id="check_<?php echo $resourcetype['id']; ?>" /></td>
+            <td class="mdl-data-table__cell--non-numeric"><?php echo $resourcetype['name']; ?></td>
+            <td><a href="<?php echo site_url('admin').'/resourcetypes/edit/'.$resourcetype['id']; ?>">Edit</a></td>
           </tr>
         <?php } ?>
         </tbody>

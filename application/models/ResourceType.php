@@ -56,9 +56,9 @@ class ResourceType extends MY_Model {
 	
 	public function select_options() {
 		$options = array();
-		$calendars = $this->all();
-		foreach ($calendars as $calendar) {
-			$options[''.$calendar['id']] = $calendar['name'];
+		$resourcetypes = $this->all();
+		foreach ($resourcetypes as $resourcetype) {
+			$options[''.$resourcetype['id']] = $resourcetype['name'];
 		}
 		return $options;
 	}

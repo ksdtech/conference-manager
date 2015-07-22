@@ -19,11 +19,11 @@
           </tr>
         </thead>
         <tbody>
-        <?php foreach($calendars as $calendar) { ?>
+        <?php foreach($groups as $group) { ?>
           <tr>
-          	<td><input type="checkbox" class="check_item" id="check_<?php echo $calendar['id']; ?>" /></td>
-            <td class="mdl-data-table__cell--non-numeric"><?php echo $calendar['name']; ?></td>
-            <td><a href="<?php echo site_url('admin').'/resourcegroups/edit/'.$calendar['id']; ?>">Edit</a></td>
+          	<td><input type="checkbox" class="check_item" id="check_<?php echo $group['id']; ?>" /></td>
+            <td class="mdl-data-table__cell--non-numeric"><?php echo $group['name']; ?></td>
+            <td><a href="<?php echo site_url('admin').'/resourcegroups/edit/'.$group['id']; ?>">Edit</a></td>
           </tr>
         <?php } ?>
         </tbody>

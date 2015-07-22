@@ -21,9 +21,9 @@
         <tbody>
         <?php foreach($resources as $resource) { ?>
           <tr>
-          	<td><input type="checkbox" class="check_item" id="check_<?php echo $resource['id']; ?>" /></td>
-            <td class="mdl-data-table__cell--non-numeric"><?php echo $resource['name']; ?></td>
-            <td><a href="<?php echo site_url('admin').'/resources/edit/'.$resource['id']; ?>">Edit</a></td>
+          	<td><input type="checkbox" class="check_item" id="check_<?php echo $resource->id; ?>" /></td>
+            <td class="mdl-data-table__cell--non-numeric"><?php echo $resource->name; ?></td>
+            <td><a href="<?php echo site_url('admin').'/resources/edit/'.$resource->id; ?>">Edit</a></td>
           </tr>
         <?php } ?>
         </tbody>

@@ -7,7 +7,7 @@
 
     <div class="mdl-card__supporting-text">
 	<?php echo form_open(site_url('admin').'/resourcegroups/add'); ?>
-		<div><label for="name">Calendar name</label><br>
+		<div><label for="name">ResourceGroup name</label><br>
     	<input type="text" id="name" name="name" size="40" value="<?php echo set_value('name'); ?>"></div>
 		<div><label for="description" cols="60" rows="3">Description</label><br>
     	<textarea id="description" name="description"><?php echo set_value('description'); ?></textarea></div>

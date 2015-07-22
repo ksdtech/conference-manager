@@ -12,10 +12,10 @@ class ResourceTypes extends MY_Controller {
 	public function index() {
 		
 		if ($this->require_role('admin')) {
-			$this->load->model('ResourceType', 'calendar');
+			$this->load->model('ResourceType', 'resourcetype');
 			$this->load->helper(array('form', 'url'));
 	
-			$data = array('calendars' => $this->calendar->all());
+			$data = array('resourcetypes' => $this->resourcetype->all());
 			$this->load->template('admin/resource_types_index', $data);	
 		}
 	}
@@ -23,7 +23,7 @@ class ResourceTypes extends MY_Controller {
 	public function add() {
 		
 		if ($this->require_role('admin')) {
-			$add_calendar_rules = array(
+			$resource_type_rules = array(
 					array(
 							'field' => 'name',
 							'label' => 'Name',
@@ -31,16 +31,16 @@ class ResourceTypes extends MY_Controller {
 					)
 			);
 			
-			$this->load->model('ResourceType', 'calendar');
+			$this->load->model('ResourceType', 'resourcetype');
 			$this->load->helper(array('form', 'url'));
 			
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules($add_calendar_rules);
+			$this->form_validation->set_rules($resource_type_rules);
 			
 			if ( $this->form_validation->run() == FALSE ) {
 				$this->load->template('admin/resource_types_add');
 			} else {
-				$resource_type_id = $this->calendar->create($this->input->post());
+				$resource_type_id = $this->resourcetype->create($this->input->post());
 				if ($resource_type_id !== FALSE) {
 					$this->session->set_flashdata('info', 'Resource type '.$resource_type_id.' was created.');
 				} else {
@@ -55,7 +55,7 @@ class ResourceTypes extends MY_Controller {
 	public function edit($resource_type_id) {
 		
 		if ($this->require_role('admin')) {	
-			$edit_calendar_rules = array(
+			$resource_type_rules = array(
 					array(
 							'field' => 'name',
 							'label' => 'Name',
@@ -63,7 +63,7 @@ class ResourceTypes extends MY_Controller {
 					)
 			);
 			
-			$this->load->model('ResourceType', 'calendar');
+			$this->load->model('ResourceType', 'resourcetype');
 			
 			$this->load->helper(array('form', 'url'));
 			$this->load->library('form_validation');
@@ -71,7 +71,7 @@ class ResourceTypes extends MY_Controller {
 
 			if ($this->form_validation->run() == FALSE) {
 				
-				$data = $this->calendar->read($resource_type_id);
+				$data = $this->resourcetype->read($resource_type_id);
 				$this->load->template('admin/resource_types_edit', $data);
 				
 			} else {
@@ -94,8 +94,8 @@ class ResourceTypes extends MY_Controller {
 	public function delete($resource_type_id) {
 		
 		if ($this->require_role('admin')) {
-			$this->load->model('ResourceType', 'calendar');
-			if ($this->calendar->delete($resource_type_id)) {
+			$this->load->model('ResourceType', 'resourcetype');
+			if ($this->resourcetype->delete($resource_type_id)) {
 				$this->session->set_flashdata('info', 'Resource type '.$resource_type_id.' was deleted.');
 			} else {
 				$this->session->set_flashdata('error', 'Resource type '.$resource_type_id.' could not be deleted.');

@@ -64,14 +64,14 @@ class ResourceCalendars extends MY_Controller {
 			);
 			
 			$this->load->model('ResourceCalendar', 'calendar');
-			
+			$this->load->model('Resource', 'resource');
 			$this->load->helper(array('form', 'url'));
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules($edit_calendar_rules);
 
 			if ($this->form_validation->run() == FALSE) {
 				
-				$data = $this->calendar->read($resource_calendar_id);
+				$data = array('calendar' => $this->calendar->read($resource_calendar_id), 'groups' => $this->group_options(), 'resources' => $this->resource->all());
 				$this->load->template('admin/resource_calendars_edit', $data);
 				
 			} else {
@@ -85,10 +85,58 @@ class ResourceCalendars extends MY_Controller {
 			}
 		}
 	}
-
+	
+	private function group_options()
+	{
+	   $groups = $this->db->order_by("name")->get("resource_groups")->result_array();
+	   $options = array("all" => "All", "none" => "None");
+	   foreach ($groups as $group) {
+		   $options[''.$group['id']] = $group['name'];
+	   }
+	   return $options;
+	}
+	
 	public function action_perform() {
 		$data = $this->input->post();
 		die("action_perform: ".$data['selected_action']);
+	}
+	
+	public function update_calendar_resources($resource_calendar_id) {
+		if ($this->require_role('admin')) {
+			$post_data = $this->input->post();
+			
+			// array('submit' => 'Submit', 'orig_item_35' => '35, 'item_35' => '1', 'item_55' => '1');
+			$orig_items = array();
+			$new_items = array();
+			foreach(array_keys($post_data) as $key) {
+				if (preg_match('/(orig_)?item_(\d+)/', $key, $matches)) {
+					$resource_id = $matches[2];
+					if ($matches[1] == 'orig_') {
+						array_push($orig_items, $resource_id);
+					} else {
+						array_push($new_items, $resource_id);
+					}
+				}
+			}
+			
+			$to_delete = array_diff($orig_items, $new_items);
+			$to_add = array_diff($new_items, $orig_items);
+			
+			if (count($to_delete) > 0) {
+				$this->db->where('resource_calendar_id', $resource_calendar_id)
+				->where_in('resource_id', $to_delete)
+				->delete('calendar_resources');
+			}
+			if (count($to_add) > 0) {
+				foreach($to_add as $resource_id) {
+					$this->db->insert('calendar_resources', array('resource_id' => $resource_id,
+							'resource_calendar_id' => $resource_calendar_id
+					));
+				}
+			}
+			$this->session->set_flashdata('info', 'Added '.count($to_add).' items, deleted '.count($to_delete).' items');
+			redirect(site_url('admin').'/resourcecalendars/edit/'.$resource_calendar_id);
+		}
 	}
 	
 	public function delete($resource_calendar_id) {

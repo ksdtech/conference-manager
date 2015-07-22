@@ -197,16 +197,14 @@ CREATE INDEX `sday_schd` ON `scheduled_days` (`schedule_id`);
 CREATE INDEX `sday_rcal` ON `scheduled_days` (`resource_calendar_id`);
 CREATE INDEX `sday_date` ON `scheduled_days` (`schedule_date`);
 
-CREATE TABLE IF NOT EXISTS `scheduled_resources` (
+CREATE TABLE IF NOT EXISTS `calendar_resources` (
  `id` int(10) unsigned NOT NULL auto_increment,
- `scheduled_day_id` int(10) unsigned NOT NULL,
+ `resource_calendar_id` int(10) unsigned NOT NULL,
  `resource_id` int(10) unsigned NOT NULL,
- `resource_type_id` int(10) unsigned NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
-CREATE INDEX `srsrc_sday` ON `scheduled_resources` (`scheduled_day_id`);
-CREATE INDEX `srsrc_rsrc` ON `scheduled_resources` (`resource_id`);
-CREATE INDEX `srsrc_rtyp` ON `scheduled_resources` (`resource_type_id`);
+CREATE INDEX `srsrc_rcal` ON `calendar_resources` (`resource_calendar_id`);
+CREATE INDEX `srsrc_rsrc` ON `calendar_resources` (`resource_id`);
 
 -- status is 
 --   'A' - added

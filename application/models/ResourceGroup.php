@@ -10,12 +10,12 @@ class ResourceGroup extends MY_Model {
 		$data['name']          = $post_data['name'];
 		$data['description']   = $post_data['description'];
 		
-		$resource_calendar_id = FALSE;
+		$resource_group_id = FALSE;
 
 		$this->db->trans_start();
 		$this->db->insert('resource_groups', $data);
 		if ($this->db->affected_rows() == 1) {
-			$resource_calendar_id = $this->db->insert_id();
+			$resource_group_id = $this->db->insert_id();
 		}
 		$this->db->trans_complete();
 
@@ -56,9 +56,9 @@ class ResourceGroup extends MY_Model {
 	
 	public function select_options() {
 		$options = array();
-		$calendars = $this->all();
-		foreach ($calendars as $calendar) {
-			$options[''.$calendar['id']] = $calendar['name'];
+		$groups = $this->all();
+		foreach ($groups as $group) {
+			$options[''.$group['id']] = $group['name'];
 		}
 		return $options;
 	}

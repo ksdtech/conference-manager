@@ -12,10 +12,10 @@ class ResourceGroups extends MY_Controller {
 	public function index() {
 		
 		if ($this->require_role('admin')) {
-			$this->load->model('ResourceGroup', 'calendar');
+			$this->load->model('ResourceGroup', 'group');
 			$this->load->helper(array('form', 'url'));
 	
-			$data = array('calendars' => $this->calendar->all());
+			$data = array('groups' => $this->group->all());
 			$this->load->template('admin/resource_groups_index', $data);	
 		}
 	}
@@ -23,7 +23,7 @@ class ResourceGroups extends MY_Controller {
 	public function add() {
 		
 		if ($this->require_role('admin')) {
-			$add_calendar_rules = array(
+			$add_resource_group_rules = array(
 					array(
 							'field' => 'name',
 							'label' => 'Name',
@@ -31,17 +31,17 @@ class ResourceGroups extends MY_Controller {
 					)
 			);
 			
-			$this->load->model('ResourceGroup', 'calendar');
+			$this->load->model('ResourceGroup', 'group');
 			$this->load->helper(array('form', 'url'));
 			
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules($add_calendar_rules);
+			$this->form_validation->set_rules($add_resource_group_rules);
 			
 			if ( $this->form_validation->run() == FALSE ) {
 				$this->load->template('admin/resource_groups_add');
 			} else {
-				$resource_calendar_id = $this->calendar->create($this->input->post());
-				if ($resource_calendar_id !== FALSE) {
+				$resource_group_id = $this->group->create($this->input->post());
+				if ($resource_group_id !== FALSE) {
 					$this->session->set_flashdata('info', 'Resource group '.$resource_group_id.' was created.');
 				} else {
 					$this->session->set_flashdata('error', 'Resource group '.$resource_group_id.' could not be created.');
@@ -55,7 +55,7 @@ class ResourceGroups extends MY_Controller {
 	public function edit($resource_group_id) {
 		
 		if ($this->require_role('admin')) {	
-			$edit_calendar_rules = array(
+			$edit_resource_group_rules = array(
 					array(
 							'field' => 'name',
 							'label' => 'Name',
@@ -63,15 +63,15 @@ class ResourceGroups extends MY_Controller {
 					)
 			);
 			
-			$this->load->model('ResourceGroup', 'calendar');
+			$this->load->model('ResourceGroup', 'resourcegroup');
 			
 			$this->load->helper(array('form', 'url'));
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules($edit_resource_groups);
+			$this->form_validation->set_rules($edit_resource_group_rules);
 
 			if ($this->form_validation->run() == FALSE) {
 				
-				$data = $this->calendar->read($resource_type_id);
+				$data = $this->resourcegroup->read($resource_type_id);
 				$this->load->template('admin/resource_groups_edit', $data);
 				
 			} else {
@@ -94,8 +94,8 @@ class ResourceGroups extends MY_Controller {
 	public function delete($resource_group_id) {
 		
 		if ($this->require_role('admin')) {
-			$this->load->model('ResourceGroup', 'calendar');
-			if ($this->calendar->delete($resource_group_id)) {
+			$this->load->model('ResourceGroup', 'resourcegroup');
+			if ($this->resourcegroup->delete($resource_group_id)) {
 				$this->session->set_flashdata('info', 'Resource group '.$resource_group_id.' was deleted.');
 			} else {
 				$this->session->set_flashdata('error', 'Resource group '.$resource_group_id.' could not be deleted.');
