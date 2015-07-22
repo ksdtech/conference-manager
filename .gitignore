@@ -1,4 +1,5 @@
 .DS_Store
+composer.lock
 
 application/config/config.php
 application/config/database.php
@@ -14,6 +15,7 @@ application/logs/*
 !application/logs/.htaccess
 
 application/third_party/community_auth/*
+application/vendor/*
 
 user_guide_src/build/*
 user_guide_src/cilexer/build/*

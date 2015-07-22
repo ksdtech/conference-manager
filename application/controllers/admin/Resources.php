@@ -23,19 +23,19 @@ class Resources extends MY_Controller {
 	public function add() {
 		
 		if ($this->require_role('admin')) {
-			$add_resource_rules = array(
-					array(
-							'field' => 'name',
-							'label' => 'Name',
-							'rules' => 'trim|required|is_unique[resources.name]'
-					)
+			$rules = array(
+				array(
+					'field' => 'name',
+					'label' => 'Name',
+					'rules' => 'trim|required|is_unique[resources.name]'
+				)
 			);
 			
 			$this->load->model('Resource', 'resource');
 			$this->load->helper(array('form', 'url'));
 			
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules($add_resource_rules);
+			$this->form_validation->set_rules($rules);
 			
 			if ( $this->form_validation->run() == FALSE ) {
 				$this->load->template('admin/resources_add');
@@ -56,11 +56,11 @@ class Resources extends MY_Controller {
 		
 		if ($this->require_role('admin')) {	
 			$rules = array(
-					array(
-							'field' => 'name',
-							'label' => 'Name',
-							'rules' => 'trim|required|edit_unique[resources.name.id.'.$resource_id.']'
-					)
+				array(
+					'field' => 'name',
+					'label' => 'Name',
+					'rules' => 'trim|required|edit_unique[resources.name.id.'.$resource_id.']'
+				)
 			);
 			
 			$this->load->model('Resource', 'resource');

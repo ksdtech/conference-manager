@@ -14,7 +14,7 @@
 		<div><label for="interval">Interval between appointments (minutes)</label><br>
 		<?php echo form_dropdown('interval', $interval_options, set_value('interval', 30), 'id="interval"'); ?>
 		<div><label for="duration">Duration in minutes</label><br>
-		<?php echo form_dropdown('duration', $interval_options, set_value('duration', 0), 'id="duration"'); ?>
+		<?php echo form_dropdown('duration', $duration_options, set_value('duration', 0), 'id="duration"'); ?>
     	<div><input type="submit" value="Submit" /></div>
 	</form>
 	<a href="<?php echo site_url('admin').'/schedules/index'; ?>">Cancel</a>

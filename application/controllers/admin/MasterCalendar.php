@@ -43,14 +43,12 @@ class MasterCalendar extends MY_Controller {
 	
 		if ($this->require_role('admin')) {
 			$today = getdate();
-			$year = $today['year'];
+			$year  = $today['year'];
 			$month = $today['mon'];
 			
-			$ymd = $this->uri->segment(4);
-			if ($ymd) {
-				$ymd_parts = explode('-', $ymd);
-				$year = $ymd_parts[0];
-				$month = $ymd_parts[1];
+			if (!empty($this->uri->segment(4)) && !empty($this->uri->segment(5))) {
+				$year  = $this->uri->segment(4);
+				$month = $this->uri->segment(5);
 			}
 
 			$prefs = array (
@@ -68,11 +66,11 @@ class MasterCalendar extends MY_Controller {
 				$schedule_date = sprintf('%04d-%02d-%02d', $year, $month, $day);
 				$scheduled_days = $this->day->all_by_date($schedule_date);
 				foreach ($scheduled_days as $scheduled_day) {
-					$cal_data[$day] .= '<a href="'.site_url('admin').'/scheduleddays/edit/'.$scheduled_day['id'].'">'
+					$cal_data[$day] .= '<a href="'.site_url('admin').'/mastercalendar/edit/'.$scheduled_day['id'].'">'
 						.$scheduled_day['calendar_name'].'</a><br/>';
 				}
 				
-				$cal_data[$day] .= '<a href="'.site_url('admin').'/mastercalendar/add/'.$schedule_date.'">[+]</a><br/>';
+				$cal_data[$day] .= '<a href="'.site_url('admin').'/mastercalendar/add/'.$year.'/'.$month.'/'.$day.'">[+]</a><br/>';
 			}
 			
 			$this->load->library('calendar', $prefs);
@@ -81,7 +79,7 @@ class MasterCalendar extends MY_Controller {
 		}
 	}
 	
-	public function add($schedule_date) {
+	public function add($year, $month, $day) {
 		if ($this->require_role('admin')) {
 			$rules = array(
 				array(
@@ -121,7 +119,9 @@ class MasterCalendar extends MY_Controller {
 				$data = array(
 					'schedules' => $schedule_options,
 					'calendars' => $calendar_options,
-					'date'      => $schedule_date
+					'year'      => $year,
+					'month'     => $month,
+					'day'       => $day,
 				);
 				$this->load->template('admin/master_calendar_add', $data);
 			} else {
@@ -129,8 +129,20 @@ class MasterCalendar extends MY_Controller {
 				if ( $this->day->create($data) === FALSE ) {
 					$this->session->set_flashdata('error', 'Unable to add the schedule!');
 				}
-				redirect(site_url('admin').'/mastercalendar/index/'.$schedule_date);
+				redirect(site_url('admin').'/mastercalendar/index/'.$year.'/'.$month);
 			}
+		}
+	}
+	
+	public function edit($scheduled_day_id) {
+		if ($this->require_role('admin')) {
+			$this->load->model('TimeBlock', 'timeblock');
+			$this->load->model('ScheduledDay', 'day');
+			$this->load->helper(array('form', 'url'));
+			$this->load->library('form_validation');
+			
+			$data = $this->day->schedule_times($scheduled_day_id);
+			$this->load->template('admin/master_calendar_edit', $data);
 		}
 	}
 }
