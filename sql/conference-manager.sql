@@ -217,7 +217,8 @@ CREATE INDEX `crsrc_rsrc` ON `calendar_resources` (`resource_id`);
 CREATE UNIQUE INDEX `crsrc_memb` ON `calendar_resources` (`resource_calendar_id`, `resource_id`);
 
 -- status is 
---   'A' - available
+--   'A' - available (as master schedule)
+--   'M' - available (added by master)
 --   'U' - unavailable
 CREATE TABLE IF NOT EXISTS `reservations` (
  `id` int(10) unsigned NOT NULL auto_increment,

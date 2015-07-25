@@ -28,12 +28,16 @@ class Resource extends MY_Model {
 		return $this->db->where('id', $resource_id)
 		->limit(1)
 		->get('resources')
-		->row_array();
+		->row_object('Resource');
 	}
 	
 	public function all() {
 		return $this->db->order_by('name')->get('resources')
 		->result('Resource');
+	}
+	
+	public function all_calendar_items($resource_id) {
+		
 	}
 	
 	public function group_class_names() {
