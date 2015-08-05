@@ -43,17 +43,18 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		->where('c.resource_id', $resource_id)
 		->order_by('d.schedule_date, t.time_start, t.time_end')
 		->get('schedule_times t, calendar_resources c')
-		->result_array();
+		->result("Reservation");
 		
 		/* Now pad with default attributes */
 		$numSlots = count($timeSlots);
 		for ($i = 0; $i < $numSlots; $i++) {
-			$timeSlots[$i]['id'] = 0;
-			$timeSlots[$i]['status'] = 'A';
-			$timeSlots[$i]['user_id'] = null;
+			$timeSlots[$i]->id = 0;
+			$timeSlots[$i]->status = 'A';
+			$timeSlots[$i]->user_id = null;
 		}
 		
-		die(var_dump($timeSlots));
+		return $timeSlots;
+		
 		/*
 		 * array(6) { [0]=> array(9) { ["resource_id"]=> string(1) "2" ["resource_calendar_id"]=> string(1) "1" 
 		 * ["schedule_date"]=> string(10) "2015-07-01" 
@@ -68,5 +69,37 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		 */
 		
 		
+	}
+	public function user_name()
+	{
+		$user_id = $this->user_id;
+		if ($user_id) {
+			$user =  $this->db->where('user_id', $user_id)
+			->limit(1)
+			->get('users')
+			->row_array();
+			$user_full_name = $user["first_name"] . " " . $user["last_name"];
+			
+			return $user_full_name;
+		}
+		
+		
+	}
+	
+	public function form_id() {
+		if ($this->id != 0) {
+			return sprintf("%d", $this->id);
+		}
+		return sprintf("%d_%s", $this->resource_calendar_id, $this->time_start);
+	}
+	
+	public function is_booked()
+	{
+		return $this->user_id != null;
+	}
+	
+	public function is_available()
+	{
+		return $this->status != 'U';
 	}
 }
