@@ -4,7 +4,8 @@
 		<h1>Edit Resource</h1>
 	</div>
 	<?php echo validation_errors(); ?>
-
+	
+	<div><a href="<?php echo site_url('managers').'/appointments/index/'.$resource->id; ?>">Edit Appointments</a></div>
     <div class="mdl-card__supporting-text">
 	<?php echo form_open(site_url('admin').'/resources/edit/'.$resource->id); ?>
 		<div><label for="name">Resource name</label><br>

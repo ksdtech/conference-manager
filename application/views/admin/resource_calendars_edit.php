@@ -25,6 +25,33 @@
 <section class="section--center mdl-grid">
   <div class="mdl-card">
     <div class="mdl-card__title">
+	  <h1>Calendar Schedules</h1>
+    </div>
+    <div class="mdl-card__supporting-text">
+  	  <?php echo form_open(site_url('admin').'/resourcecalendars/update_calendar_schedules/'.$calendar['id']); ?>
+      	<table class="mdl-data-table">
+        <thead>
+        </thead>
+        <tbody>
+        <?php foreach($schedules as $schedule) { ?>
+          <tr>
+          	<td><input type="checkbox" class="check_item ?>" id="item_<?php echo $schedule->id; ?>" name="item_<?php echo $schedule->id; ?>" value="1"
+          		/></td>
+            <td class="mdl-data-table__cell--non-numeric"><a href="<?php echo site_url('admin').'/schedules/edit/'.$schedule->id ?>"><?php echo $schedule->name; ?></a></td>
+          </tr>
+        <?php } ?>
+        </tbody>
+        </table>
+        <div><input type="submit" name="add_schedule" value="Add a Schedule" /></div>
+       
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="section--center mdl-grid">
+  <div class="mdl-card">
+    <div class="mdl-card__title">
 	  <h1>Calendar Resources</h1>
     </div>
     <div class="mdl-card__supporting-text">

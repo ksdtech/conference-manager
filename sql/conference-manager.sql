@@ -105,13 +105,13 @@ INSERT INTO `preferences` (`name`,`value`) VALUES ('durations', '5,10,15,20,25,3
 -- like "2015 Bacich Intake Conferences"
 CREATE TABLE IF NOT EXISTS `schedules` (
  `id` int(10) unsigned NOT NULL auto_increment,
+ `resource_calendar_id` int(10) unsigned NOT NULL,
  `name` varchar(40) NOT NULL,
  `description` varchar(255) NOT NULL,
- `interval_in_minutes` smallint(5) unsigned NOT NULL,
- `duration_in_minutes` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 CREATE UNIQUE INDEX `sched_name` ON `schedules` (`name`);
+CREATE INDEX `sched_rcal` ON `schedules` (`resource_calendar_id`);
 
 CREATE TABLE IF NOT EXISTS `schedule_times` (
  `id` int(10) unsigned NOT NULL auto_increment,
@@ -198,15 +198,13 @@ CREATE INDEX `rcal_rtyp` ON `resource_calendars` (`resource_type_id`);
 
 CREATE TABLE IF NOT EXISTS `scheduled_days` (
  `id` int(10) unsigned NOT NULL auto_increment,
- `resource_calendar_id` int(10) unsigned NOT NULL,
  `schedule_id` int(10) unsigned NOT NULL,
  `schedule_date` date NOT NULL, 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
-CREATE INDEX `sday_rcal` ON `scheduled_days` (`resource_calendar_id`);
 CREATE INDEX `sday_schd` ON `scheduled_days` (`schedule_id`);
 CREATE INDEX `sday_date` ON `scheduled_days` (`schedule_date`);
-CREATE UNIQUE INDEX `sday_memb` ON `scheduled_days` (`resource_calendar_id`, `schedule_id`, `schedule_date`);
+CREATE UNIQUE INDEX `sday_memb` ON `scheduled_days` (`schedule_id`, `schedule_date`);
 
 CREATE TABLE IF NOT EXISTS `calendar_resources` (
  `id` int(10) unsigned NOT NULL auto_increment,

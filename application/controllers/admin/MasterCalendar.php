@@ -87,11 +87,6 @@ class MasterCalendar extends MY_Controller {
 					'label' => 'Schedule',
 					'rules' => 'required'
 				),
-				array(
-					'field' => 'calendar',
-					'label' => 'Calendar',
-					'rules' => 'required'
-				)
 			);
 
 			$this->load->model('Schedule', 'schedule');
@@ -100,14 +95,8 @@ class MasterCalendar extends MY_Controller {
 			$this->load->helper(array('form', 'url'));
 			$this->load->library('form_validation');
 			
-			$schedule_options = $this->schedule->select_options();
+			$schedule_options = $this->calendar->select_options();
 			if (count($schedule_options) == 0) {
-				$this->session->set_flashdata('error', 'Please create at least one schedule first!');
-				redirect(site_url('admin').'/schedules/add');
-				return;
-			}
-			$calendar_options = $this->calendar->select_options();
-			if (count($calendar_options) == 0) {
 				$this->session->set_flashdata('error', 'Please create at least one resource calendar first!');
 				redirect(site_url('admin').'/resourcecalendars/add');
 				return;
@@ -118,7 +107,6 @@ class MasterCalendar extends MY_Controller {
 			if ( $this->form_validation->run() == FALSE ) {
 				$data = array(
 					'schedules' => $schedule_options,
-					'calendars' => $calendar_options,
 					'year'      => $year,
 					'month'     => $month,
 					'day'       => $day,
@@ -127,7 +115,7 @@ class MasterCalendar extends MY_Controller {
 			} else {
 				$data = $this->input->post();
 				if ( $this->day->create($data) === FALSE ) {
-					$this->session->set_flashdata('error', 'Unable to add the schedule!');
+					$this->session->set_flashdata('error', 'Unable to add the calendar!');
 				}
 				redirect(site_url('admin').'/mastercalendar/index/'.$year.'/'.$month);
 			}

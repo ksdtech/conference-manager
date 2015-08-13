@@ -20,7 +20,7 @@ class Schedules extends MY_Controller {
 		}
 	}
 	
-	public function add() {
+	public function add($resource_calendar_id) {
 		
 		if ($this->require_role('admin')) {
 			$add_schedule_rules = array(
@@ -36,21 +36,14 @@ class Schedules extends MY_Controller {
 			$this->load->model('TimeBlock', 'timeblock');
 			$this->load->helper(array('form', 'url'));	
 			$this->load->library('form_validation');
-			
-			$int_dur_options = $this->calendar->get_int_dur_options();
-			if (count($int_dur_options) == 0) {
-				$this->session->set_flashdata('error', 'Please create at least one resource calendar first to set duration!');
-				redirect(site_url('admin').'/resourcecalendars/add');
-				return;
-			}
-				
+							
 			$this->form_validation->set_rules($add_schedule_rules);
 			
 			if ( $this->form_validation->run() == FALSE ) {
-				$data = array('int_dur_options' => $int_dur_options);
+				$data = array('resource_calendar_id' => $resource_calendar_id);
 				$this->load->template('admin/schedules_add', $data);
 			} else {
-				$schedule_id = $this->schedule->create($this->input->post());
+				$schedule_id = $this->schedule->create($resource_calendar_id, $this->input->post());
 				if ($schedule_id !== FALSE) {
 					$this->session->set_flashdata('info', 'Schedule '.$schedule_id.' was created.');
 					redirect(site_url('admin').'/schedules/edit/'.$schedule_id);

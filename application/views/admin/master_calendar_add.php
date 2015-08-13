@@ -10,8 +10,6 @@
 		<input type="hidden" name="date" value="<?php echo sprintf('%04d-%02d-%02d', $year, $month, $day); ?>" />
 		<div><label for="schedule">Schedule</label><br>
 		<?php echo form_dropdown('schedule', $schedules, '', 'id="schedule"'); ?>
-		<div><label for="calendar">Resource calendar</label><br>
-		<?php echo form_dropdown('calendar', $calendars, '', 'id="calendar"'); ?>
     	<div><input type="submit" value="Submit" /></div>
 	</form>
 	<a href="<?php echo site_url('admin').'/mastercalendar/index/'.$year.'/'.$month; ?>">Cancel</a>

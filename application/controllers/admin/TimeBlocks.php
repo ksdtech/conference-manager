@@ -21,19 +21,9 @@ class TimeBlocks extends MY_Controller {
 		redirect(site_url('admin').'/schedules/edit/'.$schedule_id);
 	}
 	
-	// .../admin/timeblocks/add/:schedule_id/interval/:interval/duration/:duration
+	// .../admin/timeblocks/add/:schedule_id/
 	public function add($schedule_id) {
 		$rules = array(
-			array(
-				'field' => 'interval',
-				'label' => 'Interval',
-				'rules' => 'trim|required|numeric|greater_than_equal_to[5]|less_than_equal_to[120]'
-			),
-				array(
-				'field' => 'duration',
-				'label' => 'Duration',
-				'rules' => 'trim|required|numeric|less_than_equal_to_field[interval]'
-			),
 				array(
 				'field' => 'time_blocks',
 				'label' => 'Time blocks',
@@ -52,16 +42,16 @@ class TimeBlocks extends MY_Controller {
 		if ( $this->form_validation->run() == FALSE ) {
 			// Show input form
 			$data = array(
-				'schedule_id' => $schedule_id,
-				'interval' => $this->uri->segment(6), 
-				'duration' => $this->uri->segment(8)			
+				'schedule_id' => $schedule_id		
 			);
 			$this->load->template('admin/timeblocks_add', $data);
 		} else {
+			$this->load->model('Schedule', 'schedule');
+			$schedule_data = $this->schedule->read($schedule_id);
 			// Process form data
 			$data     = $this->input->post();
-			$interval = intval($data['interval']);
-			$duration = intval($data['duration']);
+			$interval = intval($schedule_data['interval_in_minutes']);
+			$duration = intval($schedule_data['duration_in_minutes']);
 			if ($duration == 0) {
 				$duration = $interval;
 			}

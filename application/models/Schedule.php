@@ -6,14 +6,10 @@ class Schedule extends MY_Model {
 		parent::__construct();
 	}
 
-	public function create($post_data) {
+	public function create($resource_calendar_id, $post_data) {
 		$data['name']          = $post_data['name'];
 		$data['description']   = $post_data['description'];
-		$int_dur = $post_data['int_dur'];
-		$data = explode('_', $int_dur);
-		$data['interval_in_minutes'] = intval($data[0]);
-		$data['duration_in_minutes'] = intval($data[1]);
-		
+		$data['resource_calendar_id'] = $resource_calendar_id;
 		$schedule_id = FALSE;
 
 		$this->db->trans_start();
@@ -27,15 +23,17 @@ class Schedule extends MY_Model {
 	}
 	
 	public function read($schedule_id) {
-		return $this->db->where('id', $schedule_id)
+		return $this->db->select('schedules.*, resource_calendars.interval_in_minutes, resource_calendars.duration_in_minutes')
+		->join('resource_calendars', 'resource_calendars.id=schedules.resource_calendar_id')
+		->where('schedules.id', $schedule_id)
 		->limit(1)
 		->get('schedules')
 		->row_array();
 	}
 	
-	public function all() {
-		return $this->db->order_by('name')->get('schedules')
-		->result_array();
+	public function all($resource_calendar_id) {
+		return $this->db->order_by('name')->where('resource_calendar_id', $resource_calendar_id)->get('schedules')
+		->result('Schedule');
 	}
 	
 	public function update($schedule_id, $post_data) {

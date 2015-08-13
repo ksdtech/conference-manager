@@ -36,7 +36,15 @@ class ResourceCalendar extends MY_Model {
 		return $this->db->order_by('name')->get('resource_calendars')
 		->result_array();
 	}
-
+	
+	public function all_schedules() {
+		return $this->db->select('schedules.id, schedules.name AS schedule_name, resource_calendars.name as calendar_name')
+		->order_by('calendar_name, schedule_name')
+		->join('resource_calendars', 'resource_calendars.id=schedules.resource_calendar_id')
+		->get('schedules')
+		->result_array();
+	}
+	
 	public function get_int_dur_options() {
 		$options = array();
 		$query = $this->db->distinct()
@@ -75,9 +83,9 @@ class ResourceCalendar extends MY_Model {
 	
 	public function select_options() {
 		$options = array();
-		$calendars = $this->all();
-		foreach ($calendars as $calendar) {
-			$options[''.$calendar['id']] = $calendar['name'];
+		$schedules = $this->all_schedules();
+		foreach ($schedules as $schedule) {
+			$options[''.$schedule['id']] = $schedule['calendar_name'] . ' - ' . $schedule['schedule_name'];
 		}
 		return $options;
 	}

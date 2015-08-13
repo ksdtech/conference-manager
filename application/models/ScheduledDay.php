@@ -7,7 +7,6 @@ class ScheduledDay extends CI_Model {
 	
 	public function create($post_data) {
 		$data['schedule_id']          = $post_data['schedule'];
-		$data['resource_calendar_id'] = $post_data['calendar'];
 		$data['schedule_date']        = $post_data['date'];
 	
 		$scheduled_day_id = FALSE;
@@ -25,19 +24,19 @@ class ScheduledDay extends CI_Model {
 	public function all_by_date($date) {
 		return $this->db->select('scheduled_days.*, resource_calendars.name as calendar_name, schedules.name as schedule_name')
 		->where('schedule_date', $date)
-		->join('resource_calendars', 'resource_calendars.id=scheduled_days.resource_calendar_id')
 		->join('schedules', 'schedules.id=scheduled_days.schedule_id')
+		->join('resource_calendars', 'resource_calendars.id=schedules.resource_calendar_id')
 		->order_by('resource_calendars.name, schedules.name')
 		->get('scheduled_days')
 		->result_array();	
 	}
 	
 	public function schedule_times($schedule_day_id) {
-		$scheduled_day = $this->db->select('scheduled_days.*, resource_calendars.name as calendar_name, schedules.name as schedule_name')
+		$scheduled_day = $this->db->select('scheduled_days.*, resource_calendars.id AS calendar_id, resource_calendars.name as calendar_name, schedules.name as schedule_name')
 		->where('scheduled_days.id', $schedule_day_id)
 		->limit(1)
-		->join('resource_calendars', 'resource_calendars.id=scheduled_days.resource_calendar_id')
 		->join('schedules', 'schedules.id=scheduled_days.schedule_id')
+		->join('resource_calendars', 'resource_calendars.id=schedules.resource_calendar_id')
 		->get('scheduled_days')
 		->row_array();
 				
@@ -56,7 +55,7 @@ class ScheduledDay extends CI_Model {
 				'name' => $scheduled_day['schedule_name']
 			),
 			'calendar' => array(
-				'id'   => $scheduled_day['resource_calendar_id'],
+				'id'   => $scheduled_day['calendar_id'],
 				'name' => $scheduled_day['calendar_name']
 			),
 			'year'  => intval($ymd[0]),

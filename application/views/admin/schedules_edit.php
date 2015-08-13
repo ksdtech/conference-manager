@@ -23,9 +23,7 @@
     <div class="mdl-card__title">
 	  <h1>Appointment Times</h1>
 	  <ul>
-    	<li><a href="<?php echo site_url('admin').'/timeblocks/add/'.$schedule['id']
-    		.'/interval/'.$schedule['interval_in_minutes']
-    		.'/duration/'.$schedule['duration_in_minutes']; ?>">Add</a></li>
+    	<li><a href="<?php echo site_url('admin').'/timeblocks/add/'.$schedule['id'] ?>">Add</a></li>
     	<li><a href="#" id="action_delete">Delete</a></li>
       </ul>
     </div>

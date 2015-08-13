@@ -1,3 +1,4 @@
+
 <?php
 
 class Reservation extends TimeBlock {
@@ -36,8 +37,9 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		AND c.resource_id='$resource_id'"
 		*/
 			
-		$timeSlots = $this->db->select('c.resource_id, d.resource_calendar_id, d.schedule_date, t.time_start, t.time_end, r.default_location AS location')
-		->join('scheduled_days d', 'd.resource_calendar_id=c.resource_calendar_id')
+		$timeSlots = $this->db->select('c.resource_id, c.resource_calendar_id, d.schedule_date, t.time_start, t.time_end, r.default_location AS location')
+		->join('schedules s', 's.resource_calendar_id=c.resource_calendar_id')
+		->join('scheduled_days d', 'd.schedule_id=s.id')
 		->join('resources r', 'r.id=c.resource_id')
 		->where('d.schedule_date', $schedule_date)
 		->where('c.resource_id', $resource_id)

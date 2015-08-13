@@ -93,6 +93,7 @@ class ResourceCalendars extends MY_Controller {
 			$this->load->model('Timeblock', 'timeblock');
 			$this->load->model('ResourceCalendar', 'calendar');
 			$this->load->model('Resource', 'resource');
+			$this->load->model('Schedule', 'schedule');
 			$this->load->helper(array('form', 'url'));
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules($edit_calendar_rules);
@@ -102,6 +103,7 @@ class ResourceCalendars extends MY_Controller {
 					'calendar' => $this->calendar->read($resource_calendar_id), 
 					'groups' => $this->group_options(), 
 					'resources' => $this->resource->all(),
+					'schedules' => $this->schedule->all($resource_calendar_id),
 					'interval_options' => $this->timeblock->get_duration_options('Select'),
 					'duration_options' => $this->timeblock->get_duration_options('Same as interval')
 				);
@@ -133,6 +135,16 @@ class ResourceCalendars extends MY_Controller {
 	public function action_perform() {
 		$data = $this->input->post();
 		die("action_perform: ".$data['selected_action']);
+	}
+	
+	public function update_calendar_schedules($resource_calendar_id) {
+			if ($this->require_role('admin')) {
+			$post_data = $this->input->post();
+			if ($post_data['add_schedule'])
+			{
+				redirect(site_url('admin').'/schedules/add/'.$resource_calendar_id);
+			}
+		}
 	}
 	
 	public function update_calendar_resources($resource_calendar_id) {
