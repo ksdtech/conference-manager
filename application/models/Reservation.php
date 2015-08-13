@@ -85,6 +85,25 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		
 		
 	}
+	public function create_or_update($data)
+	{
+		$res = $this->db->where(array('resource_calendar_id' => $data['resource_calendar_id'], 'schedule_date' => $data['schedule_date'], 'time_start' => $data['time_start']))
+		->limit(1)
+		->get('reservations')
+		->row_array();
+		
+		if ($this -> db ->num_rows() == 1)
+		{
+			$this->db->update('reservations', $data);
+		}
+		else 
+		{
+			$this->db->insert('reservations', $data);
+		}
+		
+		return $res['id'];
+	}
+	
 	
 	public function form_id() {
 		if ($this->id != 0) {

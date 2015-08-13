@@ -36,15 +36,7 @@ class TimeBlock extends MY_Model {
 	public function time_end_ampm() {
 		return $this->time_ampm($this->time_end);
 	}
-	public function get_booked_status($reservation_id)
-	{
-		
-	}
 	
-	public function get_availability($reservation_id)
-	{
-		
-	}
 	public function create($schedule_id, $time_start, $time_end) {	
 		$schedule_time_id = FALSE;
 	
