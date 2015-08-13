@@ -9,6 +9,8 @@ class ResourceCalendar extends MY_Model {
 	public function create($post_data) {
 		$data['name']          = $post_data['name'];
 		$data['description']   = $post_data['description'];
+		$data['interval_in_minutes'] = $post_data['interval_in_minutes'];
+		$data['duration_in_minutes'] = $post_data['duration_in_minutes'];
 		
 		$resource_calendar_id = FALSE;
 
@@ -34,10 +36,27 @@ class ResourceCalendar extends MY_Model {
 		return $this->db->order_by('name')->get('resource_calendars')
 		->result_array();
 	}
+
+	public function get_int_dur_options() {
+		$options = array();
+		$query = $this->db->distinct()
+			->select("CONCAT_WS('_', 'interval_in_minutes', 'duration_in_minutes') AS int_dur")
+			->order_by('int_dur')
+			->get('resource_calendars');
+		foreach ($query->result_array() as $row) {
+			$int_dur = $row['int_dur'];
+			$data = explode('_', $int_dur);
+			$text = sprintf("Interval %d, duration %d", intval($data[0]), intval($data[1]));
+			$options[$int_dur] = $text;
+		}
+		return $options;
+	}
 	
 	public function update($resource_calendar_id, $post_data) {
 		$data['name']          = $post_data['name'];
 		$data['description']   = $post_data['description'];
+		$data['interval_in_minutes'] = $post_data['interval_in_minutes'];
+		$data['duration_in_minutes'] = $post_data['duration_in_minutes'];
 		
 		return $this->db->where('id', $resource_calendar_id)
 		->update('resource_calendars', $data);

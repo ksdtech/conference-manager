@@ -189,6 +189,8 @@ CREATE TABLE IF NOT EXISTS `resource_calendars` (
  `resource_type_id` int(10) unsigned NOT NULL,
  `name` varchar(40) NOT NULL,
  `description` varchar(255) NOT NULL,
+ `interval_in_minutes` smallint(5) unsigned NOT NULL,
+ `duration_in_minutes` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 CREATE UNIQUE INDEX `rcal_name` ON `resource_calendars` (`name`);

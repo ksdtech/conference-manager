@@ -9,8 +9,10 @@ class Schedule extends MY_Model {
 	public function create($post_data) {
 		$data['name']          = $post_data['name'];
 		$data['description']   = $post_data['description'];
-		$data['interval_in_minutes'] = $post_data['interval'];
-		$data['duration_in_minutes'] = $post_data['duration'];
+		$int_dur = $post_data['int_dur'];
+		$data = explode('_', $int_dur);
+		$data['interval_in_minutes'] = intval($data[0]);
+		$data['duration_in_minutes'] = intval($data[1]);
 		
 		$schedule_id = FALSE;
 
@@ -39,8 +41,6 @@ class Schedule extends MY_Model {
 	public function update($schedule_id, $post_data) {
 		$data['name']          = $post_data['name'];
 		$data['description']   = $post_data['description'];
-		$data['interval_in_minutes'] = $post_data['interval'];
-		$data['duration_in_minutes'] = $post_data['duration'];
 		
 		return $this->db->where('id', $schedule_id)
 		->update('schedules', $data);

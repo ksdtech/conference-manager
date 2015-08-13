@@ -54,9 +54,7 @@ class TimeBlocks extends MY_Controller {
 			$data = array(
 				'schedule_id' => $schedule_id,
 				'interval' => $this->uri->segment(6), 
-				'duration' => $this->uri->segment(8), 
-				'interval_options' => $this->timeblock->get_duration_options('Select'),
-				'duration_options' => $this->timeblock->get_duration_options('Same as interval')
+				'duration' => $this->uri->segment(8)			
 			);
 			$this->load->template('admin/timeblocks_add', $data);
 		} else {

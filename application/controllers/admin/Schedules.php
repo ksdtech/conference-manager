@@ -29,31 +29,25 @@ class Schedules extends MY_Controller {
 							'label' => 'Name',
 							'rules' => 'trim|required|is_unique[schedules.name]'
 					),
-					array(
-							'field' => 'interval',
-							'label' => 'Interval',
-							'rules' => 'trim|required|numeric|greater_than_equal_to[5]|less_than_equal_to[120]'
-				
-					),
-					array(
-							'field' => 'duration',
-							'label' => 'Duration',
-							'rules' => 'trim|required|numeric|less_than_equal_to_field[interval]'
-					)
 			);
 			
+			$this->load->model('ResourceCalendar', 'calendar');
 			$this->load->model('Schedule', 'schedule');
 			$this->load->model('TimeBlock', 'timeblock');
 			$this->load->helper(array('form', 'url'));	
 			$this->load->library('form_validation');
 			
+			$int_dur_options = $this->calendar->get_int_dur_options();
+			if (count($int_dur_options) == 0) {
+				$this->session->set_flashdata('error', 'Please create at least one resource calendar first to set duration!');
+				redirect(site_url('admin').'/resourcecalendars/add');
+				return;
+			}
+				
 			$this->form_validation->set_rules($add_schedule_rules);
 			
 			if ( $this->form_validation->run() == FALSE ) {
-				$data = array(
-					'interval_options' => $this->timeblock->get_duration_options('Select'),
-					'duration_options' => $this->timeblock->get_duration_options('Same as interval')
-				);
+				$data = array('int_dur_options' => $int_dur_options);
 				$this->load->template('admin/schedules_add', $data);
 			} else {
 				$schedule_id = $this->schedule->create($this->input->post());
@@ -76,19 +70,8 @@ class Schedules extends MY_Controller {
 							'field' => 'name',
 							'label' => 'Name',
 							'rules' => 'trim|required|edit_unique[schedules.name.id.'.$schedule_id.']'
-					),
-					array(
-							'field' => 'interval',
-							'label' => 'Interval',
-							'rules' => 'trim|required|numeric|greater_than_equal_to[5]|less_than_equal_to[120]'
-							
-					),
-					array(
-							'field' => 'duration',
-							'label' => 'Duration',
-							'rules' => 'trim|required|numeric|less_than_equal_to_field[interval]'
-					)
-			);
+					)	
+				);
 			
 			$this->load->model('Schedule', 'schedule');
 			$this->load->model('TimeBlock', 'timeblock');
@@ -103,11 +86,8 @@ class Schedules extends MY_Controller {
 				$timeblocks = $this->timeblock->all($schedule_id);
 				$data = array(
 					'schedule' => $schedule,
-					'timeblocks' => $timeblocks,
-					'interval_options' => $this->timeblock->get_duration_options('Select'),
-					'duration_options' => $this->timeblock->get_duration_options('Same as interval')
+					'timeblocks' => $timeblocks
 				);
-				
 				$this->load->template('admin/schedules_edit', $data);
 				
 			} else {

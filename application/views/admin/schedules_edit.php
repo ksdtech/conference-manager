@@ -11,10 +11,6 @@
     	<input type="text" id="name" name="name" size="40" value="<?php echo set_value('name', $schedule['name']); ?>"></div>
 		<div><label for="description">Description</label><br>
     	<textarea id="description" name="description" cols="60" rows="3"><?php echo set_value('description', $schedule['description']); ?></textarea></div>
-		<div><label for="interval">Interval between appointments (minutes)</label><br>
-		<?php echo form_dropdown('interval', $interval_options, set_value('interval', strval($schedule['interval_in_minutes'])), 'id="interval"'); ?>
-		<div><label for="duration">Duration in minutes</label><br>
-		<?php echo form_dropdown('duration', $duration_options, set_value('duration', strval($schedule['duration_in_minutes'])), 'id="duration"'); ?>
     	<div><input type="submit" value="Submit" /></div>
 	</form>
 	<a href="<?php echo site_url('admin').'/schedules/index'; ?>">Cancel</a>

@@ -28,9 +28,21 @@ class ResourceCalendars extends MY_Controller {
 							'field' => 'name',
 							'label' => 'Name',
 							'rules' => 'trim|required|is_unique[resource_calendars.name]'
+					),
+					array(
+							'field' => 'interval_in_minutes',
+							'label' => 'Interval',
+							'rules' => 'trim|required|numeric|greater_than_equal_to[5]|less_than_equal_to[120]'
+					
+					),
+					array(
+							'field' => 'duration_in_minutes',
+							'label' => 'Duration',
+							'rules' => 'trim|required|numeric|less_than_equal_to_field[interval_in_minutes]'
 					)
 			);
 			
+			$this->load->model('Timeblock', 'timeblock');
 			$this->load->model('ResourceCalendar', 'calendar');
 			$this->load->helper(array('form', 'url'));
 			
@@ -38,7 +50,11 @@ class ResourceCalendars extends MY_Controller {
 			$this->form_validation->set_rules($add_calendar_rules);
 			
 			if ( $this->form_validation->run() == FALSE ) {
-				$this->load->template('admin/resource_calendars_add');
+				$data = array(
+					'interval_options' => $this->timeblock->get_duration_options('Select'),
+					'duration_options' => $this->timeblock->get_duration_options('Same as interval')
+				);		
+				$this->load->template('admin/resource_calendars_add', $data);
 			} else {
 				$resource_calendar_id = $this->calendar->create($this->input->post());
 				if ($resource_calendar_id !== FALSE) {
@@ -60,9 +76,21 @@ class ResourceCalendars extends MY_Controller {
 							'field' => 'name',
 							'label' => 'Name',
 							'rules' => 'trim|required|edit_unique[resource_calendars.name.id.'.$resource_calendar_id.']'
+					),
+					array(
+							'field' => 'interval_in_minutes',
+							'label' => 'Interval',
+							'rules' => 'trim|required|numeric|greater_than_equal_to[5]|less_than_equal_to[120]'
+					
+					),
+					array(
+							'field' => 'duration_in_minutes',
+							'label' => 'Duration',
+							'rules' => 'trim|required|numeric|less_than_equal_to_field[interval_in_minutes]'
 					)
 			);
 			
+			$this->load->model('Timeblock', 'timeblock');
 			$this->load->model('ResourceCalendar', 'calendar');
 			$this->load->model('Resource', 'resource');
 			$this->load->helper(array('form', 'url'));
@@ -70,8 +98,14 @@ class ResourceCalendars extends MY_Controller {
 			$this->form_validation->set_rules($edit_calendar_rules);
 
 			if ($this->form_validation->run() == FALSE) {
+				$data = array(
+					'calendar' => $this->calendar->read($resource_calendar_id), 
+					'groups' => $this->group_options(), 
+					'resources' => $this->resource->all(),
+					'interval_options' => $this->timeblock->get_duration_options('Select'),
+					'duration_options' => $this->timeblock->get_duration_options('Same as interval')
+				);
 				
-				$data = array('calendar' => $this->calendar->read($resource_calendar_id), 'groups' => $this->group_options(), 'resources' => $this->resource->all());
 				$this->load->template('admin/resource_calendars_edit', $data);
 				
 			} else {
