@@ -17,8 +17,10 @@ class TimeBlock extends MY_Model {
 	}
 	
 	public function time_ampm($val) {
+	//	die(var_dump($val));
 		$match = preg_match('/(\d\d):(\d\d):\d\d/', $val, $matches);
 		$hour =   intval($matches[1]);
+		die(var_dump($hour));
 		$minute = intval($matches[2]);
 		$ampm = ($hour >= 12) ? 'pm' : 'am';
 		if ($hour == 0) {

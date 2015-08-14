@@ -1,12 +1,22 @@
 
 <?php
 
+function time_compare($a, $b) {
+	if ($a->time_start < $b->time_start) {
+		return -1;
+	}
+	return 1;
+}
+
 class Reservation extends TimeBlock {
 
 	public function __construct() {
 		parent::__construct();
 	}
 
+	public function res_unique() {
+		return implode('-', array($this->resource_id, $this->schedule_date, $this->time_start));
+	}
 
 /*
 -- status is
@@ -36,13 +46,24 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		WHERE d.schedule_date='$schedule_date'
 		AND c.resource_id='$resource_id'"
 		*/
+		
+		$reservations = $this->db->where('resource_id', $resource_id)
+		->get('reservations')
+		->result('Reservation');
+		$res_uniques = array();
+		$numReservations = count($reservations);
+		for ($i = 0; $i < $numReservations; $i++) {
+			array_push($res_uniques, $reservations[$i]->res_unique());
+		}
+		
 			
-		$timeSlots = $this->db->select('c.resource_id, c.resource_calendar_id, d.schedule_date, t.time_start, t.time_end, r.default_location AS location')
+		$timeSlots = $this->db->select("c.resource_id, c.resource_calendar_id, d.schedule_date, t.time_start, t.time_end, r.default_location AS location")
 		->join('schedules s', 's.resource_calendar_id=c.resource_calendar_id')
 		->join('scheduled_days d', 'd.schedule_id=s.id')
 		->join('resources r', 'r.id=c.resource_id')
 		->where('d.schedule_date', $schedule_date)
 		->where('c.resource_id', $resource_id)
+		->where_not_in("CONCAT_WS('-', c.resource_id, d.schedule_date, t.time_start)", $res_uniques)
 		->order_by('d.schedule_date, t.time_start, t.time_end')
 		->get('schedule_times t, calendar_resources c')
 		->result("Reservation");
@@ -54,6 +75,10 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 			$timeSlots[$i]->status = 'A';
 			$timeSlots[$i]->user_id = null;
 		}
+		for ($i = 0; $i < $numReservations; $i++) {
+			array_push($timeSlots, $reservations[$i]);
+		}
+		usort($timeSlots, 'time_compare');
 		
 		return $timeSlots;
 		
@@ -89,21 +114,33 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 	}
 	public function create_or_update($data)
 	{
-		$res = $this->db->where(array('resource_calendar_id' => $data['resource_calendar_id'], 'schedule_date' => $data['schedule_date'], 'time_start' => $data['time_start']))
-		->limit(1)
-		->get('reservations')
-		->row_array();
+		$reservation_id = 0;
+		if (isset($data['id'])) {
+			$reservation_id = $data['id'];
+		} else {
+			$res_query = $this->db->where(array('resource_id' => $data['resource_id'], 'schedule_date' => $data['schedule_date'], 'time_start' => $data['time_start']))
+			->limit(1)
+			->get('reservations');
+			//die(var_dump(count($res)));
+			if ($res_query->num_rows() == 1)
+			{
+				$reservation_id = $res_query->row_array()['id'];
+			}
+		}
 		
-		if ($this -> db ->num_rows() == 1)
-		{
-			$this->db->update('reservations', $data);
+		if ($reservation_id != 0) {
+			unset($data['resource_calendar_id']);
+			unset($data['schedule_data']);
+			unset($data['time_start']);
+			$this->db->where('id', $reservation_id)->update('reservations', $data);
+			return $reservation_id;
 		}
 		else 
 		{
 			$this->db->insert('reservations', $data);
+			return $this->db->insert_id();
 		}
 		
-		return $res['id'];
 	}
 	
 	
@@ -111,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		if ($this->id != 0) {
 			return sprintf("%d", $this->id);
 		}
-		return sprintf("%d_%s", $this->resource_calendar_id, $this->time_start);
+		return $this->res_unique().'-'.$this->time_end;
 	}
 	
 	public function is_booked()

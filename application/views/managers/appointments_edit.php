@@ -8,7 +8,8 @@
       	<table class="mdl-data-table">
         <thead>
           <tr>
-            <th class="mdl-data-table__cell--non-numeric">Delete</th>
+            <th class="mdl-data-table__cell--non-nume.ric">Delete</th>
+             <th class="mdl-data-table__cell--non-numeric">Status</th>
             <th class="mdl-data-table__cell--non-numeric">Booked</th>
             <th class="mdl-data-table__cell--non-numeric">Appointment With</th>
             <th class="mdl-data-table__cell--non-numeric">Start Time</th>
@@ -18,9 +19,10 @@
         <tbody>
         <?php foreach($reservations as $reservation) { ?>
           <tr>
-          	<th><input type="checkbox" name="delete_<?php echo $reservation->form_id(); ?>" value = "Delete"  /></th>
-          	<th><input type="checkbox" id="check_group" value = "Booked" <?php echo $reservation->is_booked() ? 'checked="checked"' : ''; ?>/></th>
-          	 <td class="mdl-data-table__cell--non-numeric"><?php echo $reservation->user_name(); ?></td>
+          	<td><input type="checkbox" name="delete_<?php echo $reservation->form_id(); ?>" value = "Delete"  /></td>
+            <td><?php echo $reservation->status; ?></td>
+          	<td><input type="checkbox" id="check_group" value = "Booked" <?php echo $reservation->is_booked() ? 'checked="checked"' : ''; ?>/></td>
+          	<td class="mdl-data-table__cell--non-numeric"><?php echo $reservation->user_name(); ?></td>
             <td class="mdl-data-table__cell--non-numeric"><?php echo $reservation->time_start_ampm(); ?></td>
             <td class="mdl-data-table__cell--non-numeric"><?php echo $reservation->time_end_ampm(); ?></td>
           </tr>

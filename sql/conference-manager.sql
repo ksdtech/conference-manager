@@ -243,4 +243,4 @@ CREATE INDEX `resv_user` ON `reservations` (`user_id`);
 CREATE INDEX `resv_tstr` ON `reservations` (`time_start`);
 CREATE INDEX `resv_tend` ON `reservations` (`time_end`);
 CREATE INDEX `resv_notf` ON `reservations` (`last_notified_at`);
-CREATE UNIQUE INDEX `resv_memb` ON `reservations` (`resource_calendar_id`, `schedule_date`, `time_start`);
+CREATE UNIQUE INDEX `resv_memb` ON `reservations` (`resource_id`, `schedule_date`, `time_start`);

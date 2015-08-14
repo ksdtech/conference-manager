@@ -95,10 +95,11 @@ class Appointments extends MY_Controller {
 		$this->load->model('Reservation', 'reservation');
 		$this->load->helper(array('form', 'url'));
 		$this->load->library('form_validation');
-
+		
+		$schedule_date = sprintf('%04d-%02d-%02d', $year, $month, $day);
+		
 		if (!$this->input->post()) {
 				
-			$schedule_date = sprintf('%04d-%02d-%02d', $year, $month, $day);
 			$reservations = $this->reservation->all_by_date($resource_id, $schedule_date);
 			$data = array('reservations' => $reservations, 'resource_id' => $resource_id, 'year'=>$year, 'month'=>$month, 'day'=>$day);
 			$this->load->template('managers/appointments_edit',$data);
@@ -127,33 +128,37 @@ class Appointments extends MY_Controller {
 			$post_data = $this->input->post();
 			
 			foreach(array_keys($post_data) as $key) {
-				if (preg_match('/delete_(\d+)_(.+)/', $key, $matches)) {
-					$resource_calendar_id = $matches[1];
+				//Intialaize $data array
+				//$data['test'] = 0;
+				if (preg_match('/delete_(\d+)-(\d+-\d+-\d+)-([\d:]+)-([\d:]+)/', $key, $matches)) {
+					/* $resource_id = $matches[1]; */
+					/* $schedule_date = $matches[2]; */
 					
-					$duration = $this ->db-> get_where ('resource_calendars', array('resource_calendar_id' => $resource_calendar_id))
-					-> select('duration_in_minutes')[0]['duration_in_minutes'];
-					
-					$time_start = $matches[2];
-					$data['resource_calendar_id'] = $resource_calendar_id;	
+					$time_start = $matches[3];
+					$time_end = $matches[4];
+					$data['schedule_date'] = $schedule_date;
+					$data['time_start'] = $time_start;
+					$date['time_end'] = $time_end;
+					$data['resource_id'] = $resource_id;	
 					$data['created_at'] = $data['updated_at'] = date('Y-m-d H:i:s');
 					$data['user_id'] = null;
 					$data['location'] = null;
 					$data['resource_id'] = $resource_id;
 					$data['last_notified_at'] = null;
-					$data['$time_start'] = $time_start;
-					$data['$time_end'] = add_minutes_to_time($time_start, $duration);
 				}
 				else if (preg_match('/delete_(\d+)/', $key, $matches)) {
 					$reservation_id = $matches[1];
 					$data['updated_at'] = date('Y-m-d H:i:s');
 					$data['id'] = $reservation_id;
-					$data['resource_calendar_id'] = $this -> db -> get_where ('reservations', array('id' => $reservation_id))
-					->select('resource_calendar_id')[0]['resource_calendar_id'];
+					die(var_dump($data['id']));
+				}
+				else 
+				{
+					continue;
 				}
 				$data['schedule_date'] = sprintf('%04d-%02d-%02d', $year, $month, $day);
 				$data['status'] = "U";
 				$result = $this->reservation->create_or_update($data);
-				die($result);
 			}
 		}
 		
@@ -163,6 +168,6 @@ class Appointments extends MY_Controller {
 	{
 		$time_data = explode(":", $time);
 		$new_time_in_minutes = $time_data[0] * 60 + $time_data[1] + $minutes;
-		return str($new_time_in_minutes/60) . ":" . str($new_time_in_minutes % 60) . ":00";
+		return sprintf("%02d:%02d:00", intval($new_time_in_minutes/60), intval($new_time_in_minutes%60));
 	}
 }
