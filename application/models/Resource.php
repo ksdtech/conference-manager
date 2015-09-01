@@ -52,6 +52,20 @@ class Resource extends MY_Model {
 		return $class_names;
 	}
 	
+	
+	
+	public function get_all_resource_calendars($resource_id)
+	{
+		$resource_calendars = $this->db->select('resource_calendar_id')
+		->get_where('calendar_resources', array('resource_id' => $resource_id))
+		->result_array();
+	
+		return $resource_calendars;
+	
+	}
+	
+	
+	
 	public function is_on_calendar($resource_calendar_id)
 	{
 	   	$num_results = $this->db->where(array("resource_calendar_id" => $resource_calendar_id, "resource_id" => $this->id))->get("calendar_resources")->num_rows();
