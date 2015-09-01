@@ -17,7 +17,7 @@
         <?php foreach($resources as $resource) { ?>
           <tr>
           	<td><input type="radio" name="selected_resource" value="<?php echo $resource->id; ?>" /><span><?php echo $resource->name; ?></span></td>
-          	<td><?php echo form_dropdown('resource_calendar_id', $resource->get_all_resource_calendars($resource->id), set_value('resource_calendar_id'), 'data-resource-id="'. $resource->id . '"', 'class="resource_calendar_select"'); ?></td>
+          	<td><?php echo form_dropdown('resource_calendar_id', $resource->get_resource_calendar_options($resource->id), set_value('resource_calendar_id'), 'data-resource-id="'. $resource->id . '"', 'class="resource_calendar_select"'); ?></td>
           	<td><span id="num_booked_<?php echo $resource->id; ?>"></span></td>
           </tr>
         <?php } ?>

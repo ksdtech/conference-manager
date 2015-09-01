@@ -56,14 +56,23 @@ class Resource extends MY_Model {
 	
 	public function get_all_resource_calendars($resource_id)
 	{
-		$resource_calendars = $this->db->select('resource_calendar_id')
-		->get_where('calendar_resources', array('resource_id' => $resource_id))
+		$resource_calendars = $this->db->select('c.id, c.name')
+		->join('calendar_resources cr', 'cr.resource_calendar_id=c.id')
+		->where('cr.resource_id', $resource_id)
+		->get('resource_calendars c')
 		->result_array();
 	
 		return $resource_calendars;
-	
 	}
 	
+	public function get_resource_calendar_options($resource_id) {
+		$resource_calendars = $this->get_all_resource_calendars($resource_id);
+		$options = array();
+		foreach ($resource_calendars as $calendar) {
+			$options[$calendar['id']] = $calendar['name'];
+		}
+		return $options;
+	}
 	
 	
 	public function is_on_calendar($resource_calendar_id)
