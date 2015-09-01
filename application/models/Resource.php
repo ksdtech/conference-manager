@@ -67,7 +67,7 @@ class Resource extends MY_Model {
 	
 	public function get_resource_calendar_options($resource_id) {
 		$resource_calendars = $this->get_all_resource_calendars($resource_id);
-		$options = array();
+		$options = array('' => 'Select the calendar');
 		foreach ($resource_calendars as $calendar) {
 			$options[$calendar['id']] = $calendar['name'];
 		}
