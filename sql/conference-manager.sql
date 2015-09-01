@@ -143,6 +143,18 @@ CREATE TABLE IF NOT EXISTS `resource_types` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 CREATE UNIQUE INDEX `rtype_name` ON `resource_types` (`name`);
 
+CREATE TABLE IF NOT EXISTS `resource_calendars` (
+ `id` int(10) unsigned NOT NULL auto_increment,
+ `resource_type_id` int(10) unsigned NOT NULL,
+ `name` varchar(40) NOT NULL,
+ `description` varchar(255) NOT NULL,
+ `interval_in_minutes` smallint(5) unsigned NOT NULL,
+ `duration_in_minutes` smallint(5) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
+CREATE UNIQUE INDEX `rcal_name` ON `resource_calendars` (`name`);
+CREATE INDEX `rcal_rtyp` ON `resource_calendars` (`resource_type_id`);
+
 -- resource is like a teacher, "Jennifer Sterling"
 CREATE TABLE IF NOT EXISTS `resources` (
  `id` int(10) unsigned NOT NULL auto_increment,
@@ -184,17 +196,6 @@ CREATE INDEX `rmgr_rsrc` ON `resource_managers` (`resource_id`);
 CREATE INDEX `rmgr_user` ON `resource_managers` (`user_id`);
 CREATE UNIQUE INDEX `rmgr_memb` ON `resource_managers` (`resource_id`, `user_id`);
 
-CREATE TABLE IF NOT EXISTS `resource_calendars` (
- `id` int(10) unsigned NOT NULL auto_increment,
- `resource_type_id` int(10) unsigned NOT NULL,
- `name` varchar(40) NOT NULL,
- `description` varchar(255) NOT NULL,
- `interval_in_minutes` smallint(5) unsigned NOT NULL,
- `duration_in_minutes` smallint(5) unsigned NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
-CREATE UNIQUE INDEX `rcal_name` ON `resource_calendars` (`name`);
-CREATE INDEX `rcal_rtyp` ON `resource_calendars` (`resource_type_id`);
 
 CREATE TABLE IF NOT EXISTS `scheduled_days` (
  `id` int(10) unsigned NOT NULL auto_increment,

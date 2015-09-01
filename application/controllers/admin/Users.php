@@ -215,7 +215,7 @@ class Users extends MY_Controller {
 			$data = array_merge($extra_data, $name_array);
 			$this->db->trans_start();
 			$this->db->insert($table, $data);
-			if ($this->db->affected_rows() == 1) {			
+			if ($this->db->affected_rows() == 1) {
 				$id = $this->db->insert_id();
 			}
 			$this->db->trans_complete();
@@ -264,6 +264,40 @@ class Users extends MY_Controller {
 		}
 		return FALSE;
 	}
+
+	private function create_default_schedule($resource_calendar_id) {
+		$existing_schedules = $this->db->select('id')->limit(1)->where('resource_calendar_id', $resource_calendar_id)
+		->get('schedules')->row_array();
+		if (count($existing_schedules) == 0) {
+			$this->db->insert('schedules', array(
+				'resource_calendar_id' => $resource_calendar_id,
+				'name' => 'Default Schedule',
+				'description' => ''));
+			$schedule_id = $this->db->insert_id();
+
+			$calendar_data = $this->db->select('interval_in_minutes', 'duration_in_minutes')
+			->where('id', $resource_calendar_id)
+			->get('resource_calendars')
+			->row_array();
+
+			$interval = intval($calendar_data['interval_in_minutes']);
+			$duration = $interval;
+			$block_start = 8 * 60;
+			$block_last = (15 * 60) - $interval;
+			for ($time_start =  $block_start; $time_start <= $block_last; $time_start += $interval) {
+				$hour_start   = (int)($time_start/60);
+				$minute_start = $time_start % 60;
+				
+				$time_end     = $time_start + $duration;
+				$hour_end     = (int)($time_end/60);
+				$minute_end   = $time_end % 60;
+				$data = array('schedule_id' => $schedule_id, 
+					'time_start' => sprintf('%02d:%02d:00', $hour_start, $minute_start),
+					'time_end'   => sprintf('%02d:%02d:00', $hour_end, $minute_end));
+				$this->db->insert('schedule_times', $data);
+			}
+		}
+	}
 	
 	private function import_row($line_no, $row, &$error_message) {
 		$is_admin    = $this->is_truthy($row['is_admin']);
@@ -309,11 +343,15 @@ class Users extends MY_Controller {
 			return FALSE;
 		}
 		
-		$extra_data = array('resource_type_id' => $resource_type_id);
+		$extra_data = array('resource_type_id' => $resource_type_id,
+			'interval_in_minutes' => 15,
+			'duration_in_minutes' => 15);
 		$resource_calendar_id = $this->find_or_create_by_name('resource_calendars', $row['resource_calendar'], $extra_data);
 		if (!$resource_calendar_id) {
 			$error_message .= 'Line '.$line_no.', could not find or create resource calendar '.$row['resource_calendar'];
 			return FALSE;
+		} else {
+			$this->create_default_schedule($resource_calendar_id);
 		}
 		
 		$resource_group_id = $this->find_or_create_by_name('resource_groups', $row['resource_group']);

@@ -56,7 +56,6 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 			array_push($res_uniques, $reservations[$i]->res_unique());
 		}
 		
-			
 		$timeSlots = $this->db->select("c.resource_id, c.resource_calendar_id, d.schedule_date, t.time_start, t.time_end, r.default_location AS location")
 		->join('schedules s', 's.resource_calendar_id=c.resource_calendar_id')
 		->join('scheduled_days d', 'd.schedule_id=s.id')
