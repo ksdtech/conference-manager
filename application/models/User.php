@@ -13,7 +13,7 @@ class User extends Auth_model {
 	 */
 	private function _get_unused_id() {
 		// Create a random user id
-		$random_unique_int = mt_rand(1200, 4294967295);
+		$random_unique_int = mt_rand(1200, 429496729);
 	
 		// Make sure the random user_id isn't already in use
 		$query = $this->db->where('user_id', $random_unique_int)

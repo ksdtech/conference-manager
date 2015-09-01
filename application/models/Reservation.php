@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		$reservations = $this->db->where('resource_id', $resource_id)
 		->get('reservations')
 		->result('Reservation');
-		$res_uniques = array();
+		$res_uniques = array("");
 		$numReservations = count($reservations);
 		for ($i = 0; $i < $numReservations; $i++) {
 			array_push($res_uniques, $reservations[$i]->res_unique());
