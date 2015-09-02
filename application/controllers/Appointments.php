@@ -176,7 +176,7 @@ class Appointments extends MY_Controller {
 		
 		
 		
-		echo $num_booked . "appointments were booked";
+		echo $num_booked . " appointments were booked";
 	}
 	
 	public function add_minutes_to_time($time, $minutes)

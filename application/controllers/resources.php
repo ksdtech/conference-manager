@@ -10,7 +10,10 @@ class Resources extends MY_Controller {
 		$this->load->model('Resource', 'resource');
 		$this->load->helper(array('form', 'url'));
 
-		$data = array('resources' => $this->resource->all(), 'user_id' =>  1);
+		$data = array(
+			'resources' => $this->resource->all(), 
+			'user_id' => 1,
+			'base_url' => site_url('appointments'));
 		
 		$this->load->template('resource_selection', $data);
 	//}

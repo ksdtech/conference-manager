@@ -4,6 +4,7 @@
     </div>
     <div class="mdl-card__supporting-text">
     	<?php echo form_open(site_url().'/resources'); ?>
+      <input type="hidden" id="base_url" name= "base_url" value="<?php echo $base_url; ?>">
     	<input type="hidden" id="user_id" name= "user_id" value="<?php echo $user_id; ?>">
       	<table class="mdl-data-table">
         <thead>
@@ -17,7 +18,8 @@
         <?php foreach($resources as $resource) { ?>
           <tr>
           	<td><input type="radio" name="selected_resource" value="<?php echo $resource->id; ?>" /><span><?php echo $resource->name; ?></span></td>
-          	<td><?php echo form_dropdown('resource_calendar_id', $resource->get_resource_calendar_options($resource->id), set_value('resource_calendar_id'), 'data-resource-id="'. $resource->id . '"', 'class="resource_calendar_select"'); ?></td>
+          	<td><?php echo form_dropdown('resource_calendar_id', $resource->get_resource_calendar_options($resource->id), set_value('resource_calendar_id'), 
+              'data-resource-id="'. $resource->id . '" class="resource_calendar_select"'); ?></td>
           	<td><span id="num_booked_<?php echo $resource->id; ?>"></span></td>
           </tr>
         <?php } ?>
@@ -34,9 +36,10 @@ $().ready(function() {
 	$('.resource_calendar_select').on('change', function() {
 		var resource_id = $(this).data('resource-id');
 		var resource_calendar_id = $(this).val();
-		var user_id = $('#user_id');
-		
-		$.ajax('/index.php/appointments/booked/' + resource_id + '/' + resource_calendar_id + '/'+  user_id, 
+		var user_id = $('#user_id').val();
+    var base_url = $('#base_url').val();
+    var url = base_url + '/booked/' + resource_id + '/' + resource_calendar_id + '/'+  user_id;
+		$.ajax(url, 
 			{ 
 				dataType: 'text', 
 				success: function(data, textStatus, jqXHR) {
