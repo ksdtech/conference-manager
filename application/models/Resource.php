@@ -40,6 +40,21 @@ class Resource extends MY_Model {
 		
 	}
 	
+	public function is_on_resource_calendar($resource_calendar_id)
+	{
+		$calendar_resources = $this->db->select('*')
+		->get_where('calendar_resources c', array('resource_calendar_id => $resource_calendar_id, resource_id => $this->id'));
+
+		if ($calendar_resources->num_rows() == 1)
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
+	
 	public function group_class_names() {
 		$groups = $this->db->select('resource_group_id')
 		->join('resources', 'resources.id=resource_group_members.resource_id')

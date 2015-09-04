@@ -4,7 +4,7 @@
 	  <h1>Appointment Times on <?php echo $month.'/'.$day.'/'.$year; ?></h1>
     </div>
     <div class="mdl-card__supporting-text">
-    	<?php echo form_open(site_url('managers').'/appointments/edit/'.$resource_id.'/'.$year.'/'.$month.'/'.$day); ?>
+    	<?php echo form_open(site_url().'/appointments/edit/'.$resource_id.'/'.$year.'/'.$month.'/'.$day); ?>
       	<table class="mdl-data-table">
         <thead>
           <tr>

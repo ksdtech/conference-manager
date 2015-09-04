@@ -70,7 +70,7 @@
         <tbody>
         <?php foreach($resources as $resource) { ?>
           <tr>
-          	<td><input type="checkbox" class="check_item <?php echo $resource->group_class_names(); ?>" id="item_<?php echo $resource->id; ?>" name="item_<?php echo $resource->id; ?>" value="1"
+          	<td><input type="checkbox" class="check_item <?php echo $resource->group_class_names(); ?>" <?php if ($resource->is_on_resource_calendar($calendar['id'])) { echo " checked=checked"; }; ?>" id="item_<?php echo $resource->id; ?>" name="item_<?php echo $resource->id; ?>" value="1"
           		/></td>
             <td class="mdl-data-table__cell--non-numeric"><?php echo $resource->name; ?></td>
           </tr>

@@ -10,7 +10,7 @@ class Appointments extends MY_Controller {
 	 * 		http://example.com/index.php/teachers/appointments
 	 */
 	
-	public function index($resource_id) {
+	public function index($resource_id, $resource_calendar_id) {
 		
 	$template = '
    {table_open}<table border="0" cellpadding="0" cellspacing="0">{/table_open}
@@ -69,7 +69,7 @@ class Appointments extends MY_Controller {
 			$cal_data[$day] = '';
 	
 			$schedule_date = sprintf('%04d-%02d-%02d', $year, $month, $day);
-			$reservations = $this->reservation->all_by_date($resource_id, $schedule_date);
+			$reservations = $this->reservation->all_by_date_for_calendar($resource_id, $schedule_date, $resource_calendar_id);
 			$num_res = count($reservations);
 			if ($num_res > 0) {
 				$cal_data[$day] .= '<a href="'.site_url().'/appointments/edit/'.$resource_id.'/'.$year.'/'.$month.'/'.$day.'">'
@@ -102,7 +102,7 @@ class Appointments extends MY_Controller {
 				
 			$reservations = $this->reservation->all_by_date($resource_id, $schedule_date);
 			$data = array('reservations' => $reservations, 'resource_id' => $resource_id, 'year'=>$year, 'month'=>$month, 'day'=>$day);
-			$this->load->template('managers/appointments_edit',$data);
+			$this->load->template('parents/edit',$data);
 		}
 		else
 		{
@@ -141,7 +141,7 @@ class Appointments extends MY_Controller {
 					$date['time_end'] = $time_end;
 					$data['resource_id'] = $resource_id;	
 					$data['created_at'] = $data['updated_at'] = date('Y-m-d H:i:s');
-					$data['user_id'] = null;
+					$data['user_id'] = $post_data['user_id'];
 					$data['location'] = null;
 					$data['resource_id'] = $resource_id;
 					$data['last_notified_at'] = null;
