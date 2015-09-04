@@ -118,6 +118,9 @@ class MasterCalendar extends MY_Controller {
 					$this->session->set_flashdata('error', 'Unable to add the calendar!');
 				}
 				redirect(site_url('admin').'/mastercalendar/index/'.$year.'/'.$month);
+				
+				redirect(site_ur('').'/appointments/edit/'.$resource_id.'/' . $resource_calendar_id . '/' .$year.'/'.$month.'/'.$day);
+				
 			}
 		}
 	}

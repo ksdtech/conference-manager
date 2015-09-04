@@ -69,13 +69,14 @@ class Appointments extends MY_Controller {
 			$cal_data[$day] = '';
 	
 			$schedule_date = sprintf('%04d-%02d-%02d', $year, $month, $day);
-			$reservations = $this->reservation->all_by_date_for_calendar($resource_id, $schedule_date, $resource_calendar_id);
+		
+			$reservations = $this->reservation->all_by_date_for_calendar($resource_id, $schedule_date, $resource_calendar_id,41883951);
 			$num_res = count($reservations);
 			if ($num_res > 0) {
-				$cal_data[$day] .= '<a href="'.site_url().'/appointments/edit/'.$resource_id.'/'.$year.'/'.$month.'/'.$day.'">'
+				$cal_data[$day] .= '<a href="'.site_url().'/appointments/edit/'.$resource_id.'/' . $resource_calendar_id . '/' .$year.'/'.$month.'/'.$day.'">'
 						.$num_res.' reservations</a><br/>';
 			} else {
-				$cal_data[$day] .= '<a href="'.site_url().'/appointments/edit/'.$resource_id.'/'.$year.'/'.$month.'/'.$day.'">'
+				$cal_data[$day] .= '<a href="'.site_url().'/appointments/edit/'.$resource_id.'/'  . $resource_calendar_id . '/' .$year.'/'.$month.'/'.$day.'">'
 						.'[+]</a><br/>';
 			}
 		}
@@ -83,13 +84,14 @@ class Appointments extends MY_Controller {
 		$this->load->library('calendar', $prefs);
 		$data = array('calendar' => $this->calendar->generate($year, $month, $cal_data));
 		$this->load->template('admin/master_calendar_index', $data);
+		
 	}
 	}
 	
 	/* $resource_id = 2; */
 	/* managers/appointments/edit/2/2015/7/1 */
 	/* 2015-07-01 */
-	public function edit($resource_id, $year, $month, $day)
+	public function edit($resource_id, $resource_calendar_id, $year, $month, $day)
 	{
 		$this->load->model('Timeblock', 'timeblock');
 		$this->load->model('Reservation', 'reservation');
@@ -100,8 +102,24 @@ class Appointments extends MY_Controller {
 		
 		if (!$this->input->post()) {
 				
-			$reservations = $this->reservation->all_by_date($resource_id, $schedule_date);
-			$data = array('reservations' => $reservations, 'resource_id' => $resource_id, 'year'=>$year, 'month'=>$month, 'day'=>$day);
+			$reservations = $this->reservation->all_by_date_for_calendar($resource_id, $schedule_date, $resource_calendar_id, 41883951);
+			
+			$user_booked_appointment = false;
+				
+			foreach ($reservations as $reservation)
+			{
+				if ($reservation -> is_booked())
+				{
+					$user_booked_appointment = true;
+				}
+			}
+			
+			$data = array('resource_calendar_id' => $resource_calendar_id, 'reservations' => $reservations, 'user_booked_appointment' => $user_booked_appointment, 'resource_id' => $resource_id, 'year'=>$year, 'month'=>$month, 'day'=>$day);
+			
+			//Determine if the current user book at least one appointment.  
+			
+			
+			
 			$this->load->template('parents/edit',$data);
 		}
 		else
@@ -126,40 +144,56 @@ class Appointments extends MY_Controller {
 			
 			
 			$post_data = $this->input->post();
-			
+			//echo "hi";
+			//die(var_dump($post_data));
 			foreach(array_keys($post_data) as $key) {
 				//Intialaize $data array
 				//$data['test'] = 0;
-				if (preg_match('/delete_(\d+)-(\d+-\d+-\d+)-([\d:]+)-([\d:]+)/', $key, $matches)) {
+				
+				$data['schedule_date'] = sprintf('%04d-%02d-%02d', $year, $month, $day);
+				
+				
+				if (preg_match('/book_(\d+)-(\d+-\d+-\d+)-([\d:]+)-([\d:]+)/', $key, $matches)) {
 					/* $resource_id = $matches[1]; */
 					/* $schedule_date = $matches[2]; */
 					
+					$data['status'] = "U";
+					
 					$time_start = $matches[3];
 					$time_end = $matches[4];
+				//	die(var_dump($time_end));
+					$data['resource_calendar_id'] = $resource_calendar_id;				
 					$data['schedule_date'] = $schedule_date;
 					$data['time_start'] = $time_start;
-					$date['time_end'] = $time_end;
+					$data['time_end'] = $time_end;
 					$data['resource_id'] = $resource_id;	
 					$data['created_at'] = $data['updated_at'] = date('Y-m-d H:i:s');
 					$data['user_id'] = $post_data['user_id'];
 					$data['location'] = null;
 					$data['resource_id'] = $resource_id;
 					$data['last_notified_at'] = null;
+					
 				}
-				else if (preg_match('/delete_(\d+)/', $key, $matches)) {
+				else if (preg_match('/unbook_(\d+)/', $key, $matches)) {
+					$data['status'] = "A";
+					$data['user_id'] = null;
 					$reservation_id = $matches[1];
 					$data['updated_at'] = date('Y-m-d H:i:s');
 					$data['id'] = $reservation_id;
-					die(var_dump($data['id']));
+					//die(var_dump($data['id']));
 				}
 				else 
 				{
 					continue;
 				}
-				$data['schedule_date'] = sprintf('%04d-%02d-%02d', $year, $month, $day);
-				$data['status'] = "U";
+				
 				$result = $this->reservation->create_or_update($data);
+				//die(var_dump($data));
+				
 			}
+			
+			redirect(site_url().'/appointments/edit/'.$resource_id.'/' . $resource_calendar_id . '/' .$year.'/'.$month.'/'.$day);
+			
 		}
 		
 	}

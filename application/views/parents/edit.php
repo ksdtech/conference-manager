@@ -4,8 +4,8 @@
 	  <h1>Available Appointment Times on <?php echo $month.'/'.$day.'/'.$year; ?></h1>
     </div>
     <div class="mdl-card__supporting-text">
-    	<?php echo form_open(site_url('managers').'/appointments/edit/'.$resource_id.'/'.$year.'/'.$month.'/'.$day); ?>
-    	<input type = "hidden" name = "user_id" value = $User_id>
+    	<?php echo form_open(site_url().'/appointments/edit/'.$resource_id.'/' . $resource_calendar_id . '/' .$year.'/'.$month.'/'.$day); ?>
+    	<input type = "hidden" name = "user_id" value = 41883951>
       	<table class="mdl-data-table">
         <thead>
           <tr>
@@ -18,9 +18,13 @@
         <?php foreach($reservations as $reservation) { ?>
           <tr>
        		<?php if (! $reservation->is_booked()){ ?>
-          	<td><input type="submit" value = "Book" name = "Book_<?php echo $reservation->form_id(); ?>" id="check_group" value = <?php echo $reservation->id ?>;</td>
+       			<?php if ($user_booked_appointment == false){?>
+          	<td><input type="submit" value = "Book" name = "book_<?php echo $reservation->form_id(); ?>" id="check_group" value = <?php echo $reservation->id ?>;</td>
+       				<?php }else{?>
+       				<td><input type="submit" disabled = true value = "Book" name = "book_<?php echo $reservation->form_id(); ?>" id="check_group" value = <?php echo $reservation->id ?>;</td>
+       				<?php } ?>
        		<?php }else{?>
-       			<td><input type="submit" value = "Unbook" name = "Unbook_<?php echo $reservation->id; ?>" id="check_group" value = <?php echo $reservation->id ?>;</td>
+       			<td><input type="submit" value = "Unbook" name = "unbook_<?php echo $reservation->id; ?>" id="check_group" value = <?php echo $reservation->id ?>;</td>
        		<?php } ?>
             <td class="mdl-data-table__cell--non-numeric"><?php echo $reservation->time_start_ampm(); ?></td>
             <td class="mdl-data-table__cell--non-numeric"><?php echo $reservation->time_end_ampm(); ?></td>

@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		`user_id` int(10) unsigned DEFAULT NULL,
 		`location` varchar(40) DEFAULT NULL,
 */
-	public function all_by_date_for_calendar($resource_id,$schedule_date, $resource_calendar_id)
+	public function all_by_date_for_calendar($resource_id,$schedule_date, $resource_calendar_id, $User_id)
 	{
 		/* Get resource_calendar ids for this resource from the calendar_resources table
 		 Get schedule_id for this resource from scheduled_days table for on this date
@@ -47,12 +47,13 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		 WHERE d.schedule_date='$schedule_date'
 		 AND c.resource_id='$resource_id'"
 		 */
-		
+				
 		$reservations = $this->db->where('resource_id', $resource_id)
 		->get('reservations')
 		->result('Reservation');
-		$res_uniques = array("");
 		$numReservations = count($reservations);
+		$res_uniques = array("");
+		
 		for ($i = 0; $i < $numReservations; $i++) {
 			array_push($res_uniques, $reservations[$i]->res_unique());
 		}
@@ -76,8 +77,15 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 			$timeSlots[$i]->status = 'A';
 			$timeSlots[$i]->user_id = null;
 		}
-		for ($i = 0; $i < $numReservations; $i++) {
-			array_push($timeSlots, $reservations[$i]);
+		
+		
+		$current_user_reservations = $this->db->get_where('reservations', array('resource_id' => $resource_id, 'user_id' => $User_id, 'resource_calendar_id' => $resource_calendar_id))
+		->result('Reservation');
+		
+		//Only get the open reservations and the reservations for the current user.
+	
+		for ($i = 0; $i < count($current_user_reservations); $i++) {
+			array_push($timeSlots, $current_user_reservations[$i]);
 		}
 		usort($timeSlots, 'time_compare');
 		
@@ -95,14 +103,6 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		 *
 		 * Then get adds and deletes for this resource from reservations table
 		 */
-	}
-	
-	public function booked_by_user($resource_id, $schedule_date, $resource_calendar_id, $User_id)
-	{
-		$reservations = $this->db->get_where('reservations', array('resource_id' => $resource_id, 'user_id' => $User_id, 'resource_calendar_id' => $resource_calendar_id))
-		->result('Reservation');
-		
-		return $reservations;
 	}
 	
 	
@@ -209,8 +209,10 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		}
 		else 
 		{
+		
 			$this->db->insert('reservations', $data);
 			return $this->db->insert_id();
+			//die(var_dump("a " . $data['time_end']));
 		}
 		
 	}
