@@ -29,6 +29,15 @@ class User extends Auth_model {
 	}
 	
 	public function create($post_data) {
+		if ( !empty( $post_data['user_pass'] ) ) {
+			$data['user_salt'] = $this->authentication->random_salt();
+			$data['user_pass'] = $this->authentication->hash_passwd($post_data['user_pass'], $data['user_salt']);
+		} elseif ( !empty( $post_data['oauth_uid'] ) ) {
+			$data['user_salt'] = '*google*';
+			$data['user_pass'] = $this->authentication->hash_passwd($post_data['oauth_uid'], $data['user_salt']);
+		} else {
+			return false;
+		}
 		
 		// We don't use usernames, so 'user_name' must be entered into the record as NULL
 		$data['user_level']    = $post_data['user_level'];
@@ -36,8 +45,6 @@ class User extends Auth_model {
 		$data['last_name']     = $post_data['last_name'];
 		$data['user_name']     = NULL;
 		$data['user_email']    = $post_data['user_email'];
-		$data['user_salt']     = $this->authentication->random_salt();
-		$data['user_pass']     = $this->authentication->hash_passwd($post_data['user_pass'], $data['user_salt']);
 		$data['user_id']       = $this->_get_unused_id();
 		$data['user_date']     = date('Y-m-d H:i:s');
 		$data['user_modified'] = date('Y-m-d H:i:s');
@@ -63,22 +70,31 @@ class User extends Auth_model {
 	
 	public function find_or_create_by_email($data) {
 		$user_id = FALSE;
+		$created = FALSE;
 		$id_array = $this->db->select('user_id')
 			->limit(1)
 			->get_where('users', array('user_email' => $data['user_email']))
 			->row_array();
+
 		if (count($id_array) > 0) {
 			$user_id = $id_array['user_id'];
 		} else {
 			$user_id = $this->create($data);
+			if ( $user_id ) {
+				$created = TRUE;
+			}
 		}
-		return $user_id;
+		return array('user_id' => $user_id, 'created' => $created);
 	}
 	
 	public function all() {
 		return $this->db->order_by('last_name, first_name, user_email')
 		->get('users')
 		->result_array();
+	}
+
+	public function login( $user_string, $user_pass ) {
+		
 	}
 	
 	public function update($user_id, $post_data) {

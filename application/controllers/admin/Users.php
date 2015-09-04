@@ -309,7 +309,8 @@ class Users extends MY_Controller {
 			$user_level = 6;
 		}
 		$row['user_level'] = $user_level;
-		$user_id = $this->user->find_or_create_by_email($row);
+		$results = $this->user->find_or_create_by_email($row);
+		$user_id = $results['user_id'];
 		if (!$user_id) {
 			$error_message .= 'Line '.$line_no.', could not find or create user '.$row['user_email'];
 			return FALSE;

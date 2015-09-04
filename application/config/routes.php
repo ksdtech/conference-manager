@@ -56,3 +56,6 @@ $route['translate_uri_dashes'] = FALSE;
 // Custom login controller - see http://community-auth.com/blog-posts/the-login-form
 // LOGIN_PAGE is a constant defined in application/hooks/auth_constants.php
 $route[LOGIN_PAGE] = 'auth/login';
+
+// Oauth callback
+$route['oauth2callback'] = 'auth/oauth2callback';
