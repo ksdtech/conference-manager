@@ -2,7 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Appointments extends MY_Controller {
-
 	/**
 	 * Index Page for this controller.
 	 *
@@ -11,7 +10,8 @@ class Appointments extends MY_Controller {
 	 */
 	
 	public function index($resource_id, $resource_calendar_id) {
-		
+		if ($this->require_min_level(1))
+		{
 	$template = '
    {table_open}<table border="0" cellpadding="0" cellspacing="0">{/table_open}
 	
@@ -70,7 +70,7 @@ class Appointments extends MY_Controller {
 	
 			$schedule_date = sprintf('%04d-%02d-%02d', $year, $month, $day);
 		
-			$reservations = $this->reservation->all_by_date_for_calendar($resource_id, $schedule_date, $resource_calendar_id,41883951);
+			$reservations = $this->reservation->all_by_date_for_calendar($resource_id, $schedule_date, $resource_calendar_id,$this ->auth_user_id);
 			$num_res = count($reservations);
 			if ($num_res > 0) {
 				$cal_data[$day] .= '<a href="'.site_url().'/appointments/edit/'.$resource_id.'/' . $resource_calendar_id . '/' .$year.'/'.$month.'/'.$day.'">'
@@ -87,12 +87,62 @@ class Appointments extends MY_Controller {
 		
 	}
 	}
-	
+	}
 	/* $resource_id = 2; */
 	/* managers/appointments/edit/2/2015/7/1 */
 	/* 2015-07-01 */
+	
+	public function edit_all()
+	{
+		if ($this->require_min_level(1))
+		{
+			$this->load->model('Timeblock', 'timeblock');
+			$this->load->model('Reservation', 'reservation');
+			$this->load->helper(array('form', 'url'));
+			$this->load->library('form_validation');
+	
+			if (!$this->input->post()) {
+	
+				$reservations = $this->reservation->all_appointments();
+				$data = array('reservations' => $reservations);
+				$this->load->template('parents/appointments_list',$data);
+			}
+			else
+			{
+				$post_data = $this->input->post();
+					
+				foreach(array_keys($post_data) as $key) {
+					//Intialaize $data array
+					//$data['test'] = 0;
+					if (preg_match('/unbook_(\d+)/', $key, $matches)) {
+						$data['status'] = "A";
+						$data['user_id'] = null;
+						$reservation_id = $matches[1];
+						$data['updated_at'] = date('Y-m-d H:i:s');
+						$data['id'] = $reservation_id;
+						//die(var_dump($data['id']));
+					}
+					else
+					{
+						continue;
+					}
+					$result = $this->reservation->create_or_update($data);
+				}
+			
+			
+				redirect(site_url().'/appointments/edit_all/');
+			}
+			
+			
+		}
+	
+	}
+	
+	
 	public function edit($resource_id, $resource_calendar_id, $year, $month, $day)
 	{
+		if ($this->require_min_level(1))
+		{
 		$this->load->model('Timeblock', 'timeblock');
 		$this->load->model('Reservation', 'reservation');
 		$this->load->helper(array('form', 'url'));
@@ -102,7 +152,7 @@ class Appointments extends MY_Controller {
 		
 		if (!$this->input->post()) {
 				
-			$reservations = $this->reservation->all_by_date_for_calendar($resource_id, $schedule_date, $resource_calendar_id, 41883951);
+			$reservations = $this->reservation->all_by_date_for_calendar($resource_id, $schedule_date, $resource_calendar_id, $this->auth_user_id);
 			
 			$user_booked_appointment = false;
 				
@@ -195,7 +245,7 @@ class Appointments extends MY_Controller {
 			redirect(site_url().'/appointments/edit/'.$resource_id.'/' . $resource_calendar_id . '/' .$year.'/'.$month.'/'.$day);
 			
 		}
-		
+		}
 	}
 	
 	// This is an AJAX call from the resource_selection view.
@@ -213,7 +263,7 @@ class Appointments extends MY_Controller {
 		echo $num_booked . " appointments were booked";
 	}
 	
-	public function add_minutes_to_time($time, $minutes)
+	private function add_minutes_to_time($time, $minutes)
 	{
 		$time_data = explode(":", $time);
 		$new_time_in_minutes = $time_data[0] * 60 + $time_data[1] + $minutes;

@@ -34,6 +34,25 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		`user_id` int(10) unsigned DEFAULT NULL,
 		`location` varchar(40) DEFAULT NULL,
 */
+	
+	public function all_appointments_for_teacher()
+	{
+		$reservations = $this -> db->get_where('reservations', array('resource_id' => $resource_id))
+		->result('Reservation');
+		usort($reservations, 'time_compare');
+	
+		return $reservations;
+	}
+	
+	public function all_appointments()
+	{
+		$reservations = $this -> db->get_where('reservations', array('user_id' => ($this -> auth_user_id)))
+			->result('Reservation');
+		usort($reservations, 'time_compare');
+		
+		return $reservations;
+	}
+	
 	public function all_by_date_for_calendar($resource_id,$schedule_date, $resource_calendar_id, $User_id)
 	{
 		/* Get resource_calendar ids for this resource from the calendar_resources table
@@ -47,10 +66,11 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		 WHERE d.schedule_date='$schedule_date'
 		 AND c.resource_id='$resource_id'"
 		 */
-				
-		$reservations = $this->db->where('resource_id', $resource_id)
-		->get('reservations')
+		
+		$reservations = $this->db->get_where('reservations', array('resource_id' => $resource_id, 
+				'resource_calendar_id' => $resource_calendar_id, 'schedule_date' => $schedule_date, 'user_id !=' => null))
 		->result('Reservation');
+		
 		$numReservations = count($reservations);
 		$res_uniques = array("");
 		
@@ -79,10 +99,11 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		}
 		
 		
-		$current_user_reservations = $this->db->get_where('reservations', array('resource_id' => $resource_id, 'user_id' => $User_id, 'resource_calendar_id' => $resource_calendar_id))
-		->result('Reservation');
+		$current_user_reservations = $this->db->get_where('reservations', array('resource_id' => $resource_id, 'schedule_date' => $schedule_date, 
+				'user_id' => $User_id, 'resource_calendar_id' => $resource_calendar_id))
+			->result('Reservation');
 		
-		//Only get the open reservations and the reservations for the current user.
+		//Get all the open reservations and the reservations already made by the current user.
 	
 		for ($i = 0; $i < count($current_user_reservations); $i++) {
 			array_push($timeSlots, $current_user_reservations[$i]);

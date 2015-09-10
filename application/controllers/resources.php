@@ -6,7 +6,8 @@ class Resources extends MY_Controller {
 
 	public function index() {
 
-		
+		if ($this->require_min_level(1))
+		{
 		if ($this->input->post())
 		{
 			$post_data = $this->input->post();
@@ -33,11 +34,6 @@ class Resources extends MY_Controller {
 		
 	//}
 	}
-	
-	public function get_user()
-	{
-		return "Matthew";
 	}
-	
 	
 }
