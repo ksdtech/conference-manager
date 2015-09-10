@@ -84,5 +84,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<li><a href="<?php echo site_url('admin').'/mastercalendar'; ?>">Master Calendar</a></li>
 	<li><a href="<?php echo site_url('admin').'/users'; ?>">Manage Users</a></li>
 	<li><a href="<?php echo site_url('admin').'/users'; ?>">Manage Preferences</a> [NOT IMPLEMENTED]</li>
+	<li><a href="<?php echo site_url('managers').'/appointments/resources'; ?>">Teacher Interface</a></li>
 	<li><a href="<?php echo site_url('resources').'/index'; ?>">Parent Interface</a></li>
+<?php if (isset($auth_user_id)) { ?>
+	<li><a href="<?php echo site_url('logout'); ?>">Log Out</a></li>
+<?php } ?>
 </ul>
