@@ -91,8 +91,8 @@ class Appointments extends MY_Controller {
 		}
 			
 		$this->load->library('calendar', $prefs);
-		$data = array('calendar' => $this->calendar->generate($year, $month, $cal_data));
-		$this->load->template('admin/master_calendar_index', $data);
+		$data = array('calendar' => $this->calendar->generate($year, $month, $cal_data), 'resource_id' => $resource_id);
+		$this->load->template('managers/appointments_index', $data);
 	}
 	}
 	}
@@ -179,7 +179,7 @@ class Appointments extends MY_Controller {
 		
 	}
 	
-	public function edit_all()
+	public function edit_all($resource_id)
 	{
 		if ($this->require_min_level(6))
 		{
@@ -190,9 +190,9 @@ class Appointments extends MY_Controller {
 	
 			if (!$this->input->post()) {
 	
-				$reservations = $this->reservation->all_appointments();
+				$reservations = $this->reservation->all_booked_appointments_for_teacher($resource_id);
 				$data = array('reservations' => $reservations);
-				$this->load->template('parents/appointments_list',$data);
+				$this->load->template('managers/appointments_list',$data);
 			}
 			else
 			{
@@ -217,10 +217,8 @@ class Appointments extends MY_Controller {
 				}
 					
 					
-				redirect(site_url().'/appointments/edit_all/');
+				redirect(site_url('managers').'/appointments/edit_all/' . $resource_id);
 			}
-				
-				
 		}
 	
 	}

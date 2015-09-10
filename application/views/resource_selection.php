@@ -4,6 +4,7 @@
     </div>
     <div class="mdl-card__supporting-text">
     	<?php echo form_open(site_url().'/resources'); ?>
+    	<a href= <?php echo site_url().'/appointments/edit_all/' ?></a> View All Booked Appointments</a><br>
       <input type="hidden" id="base_url" name= "base_url" value="<?php echo $base_url; ?>">
     	<input type="hidden" id="user_id" name= "user_id" value="<?php echo $user_id; ?>">
       	<table class="mdl-data-table">

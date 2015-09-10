@@ -35,9 +35,9 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		`location` varchar(40) DEFAULT NULL,
 */
 	
-	public function all_appointments_for_teacher()
+	public function all_booked_appointments_for_teacher($resource_id)
 	{
-		$reservations = $this -> db->get_where('reservations', array('resource_id' => $resource_id))
+		$reservations = $this -> db->get_where('reservations', array('resource_id' => $resource_id, 'user_id !=' => null))
 		->result('Reservation');
 		usort($reservations, 'time_compare');
 	
@@ -142,6 +142,7 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		*/
 		
 		$reservations = $this->db->where('resource_id', $resource_id)
+		->where('schedule_date', $schedule_date)
 		->get('reservations')
 		->result('Reservation');
 		$res_uniques = array("");
