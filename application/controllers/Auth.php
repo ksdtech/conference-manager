@@ -91,53 +91,63 @@ class Auth extends MY_Controller
         $this->load->template('auth/login');
     }
 
+    private function get_oauth_next_url() {
+        $next_url = FALSE;
+        $session_state = $this->session->userdata('oauth2state');
+        if ($session_state) {
+            $state_params = unserialize(base64_decode($session_state));
+            if ( !empty($state_params['redirect']) ) {
+                $next_url = $state_params['redirect'];
+            }
+        }
+        return $next_url;
+    }
+
     public function oauth2callback() 
     {
+        $next_url = $this->get_oauth_next_url();
+        $success = false;
+
         if ( $this->input->get('error') ) {
             // Got an error, probably user denied access
-            exit('Got error: ' . $this->input->get('error'));
+            log_message('error', 'Google oauth error: ' . $this->input->get('error'));
         } else {
             $code = $this->input->get('code');
             $state = $this->input->get('state');
 
             $this->load->library('session');
             if ( empty($state) ) {
-                exit('Missing state');
+                log_message('error', 'Google oauth missing state');
             } else {
                 $session_state = $this->session->userdata('oauth2state');
                 if ( $state !== $session_state ) {
 
                     // State is invalid, possible CSRF attack in progress
                     $this->session->unset_userdata('oauth2state');
-                    exit( 'Invalid state (session had ' . $session_state . ' but auth has ' . $state . ')');
+                    log_message( 'error', 
+                        'Google oauth invalid state (session had ' . $session_state . ' but auth has ' . $state . ')');
                 }
             }
 
             if ( empty($code) ) {
-                exit('Missing code');
+                log_message('error', 'Google oauth missing code');
             } else {
                 // Try to get an access token (using the authorization code grant)
                 $provider = $this->getProvider();
                 $token = $provider->getAccessToken('authorization_code', array('code' => $code));
 
                 if ( !$token ) {
-                    exit('No access token');
+                    log_message('error', 'Google oauth missing access token');
                 } else {
                     // save access token
                     $encoded_token = base64_encode(serialize($token));
                     $this->session->set_userdata('token', $encoded_token);
 
-                    $session_state = $this->session->userdata('oauth2state');
-                    $state_params = unserialize(base64_decode($session_state));
-                    $next_url = site_url('welcome');
-                    if ( !empty($state_params['redirect']) ) {
-                        $next_url = $state_params['redirect'];
-                    }
+                    // discard oauth state
                     $this->session->unset_userdata('oauth2state');
 
+                    // Set up community auth $auth_data from the aouth user toaken
                     $userDetails = $provider->getUserDetails($token);
-                    // uid, name, firstName, lastName, email, imageUrl
-
                     $user_string = $userDetails->email;
                     $oauth_uid   = strval($userDetails->uid);
                     $user_data   = array(
@@ -150,17 +160,32 @@ class Auth extends MY_Controller
 
                     $this->load->model('User', 'user');
                     $results = $this->user->find_or_create_by_email( $user_data );
-                    if ( !empty( $results['user_id'] ) ) {
+                    if ( empty( $results['user_id'] ) ) {
+                        log_message('error', 'Google oauth user find or create failed for ' . $user_string);
+                    } else {
                         $auth_data = $this->user->get_auth_data( $user_string );
-                        if ( $auth_data ) {
+                        if ( !$auth_data ) {
+                            log_message('error', 'Google oauth user get_auth_data failed for ' . $user_string);
+                        } else {
                             $this->authentication->maintain_state_on_oauth_login( $auth_data );
+                            if (!$next_url) {
+                                $next_url = site_url( 'welcome' );
+                            }
+                            log_message('debug', 'Google oauth succeeded, redirecting to ' . $next_url);
+                            $success = true;
                             redirect( $next_url );
                         }
                     }
-
-                    exit("Google user create or lookup failed");
                 }
             }
+        }
+        if (!$success) {
+            log_message('debug', 'oauth2callback failed, going back to login page');
+            $login_url = secure_site_url('login');
+            if ($next_url) {
+                $login_url .= '?redirect='.$next_url;
+            }
+            redirect( $login_url );
         }
     }
 

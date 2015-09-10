@@ -9,6 +9,14 @@ class Appointments extends MY_Controller {
 	 * Maps to the following URL
 	 * 		http://example.com/index.php/teachers/appointments
 	 */
+
+	public function resources() {
+		if ($this->require_min_level(6)) {
+			$this->load->model('User', 'user');
+			$data = array('options' => $this->user->managed_resource_options( $this->auth_user_id ));
+			$this->load->template('managers/resources_list', $data);
+		}
+	}
 	
 	public function index($resource_id) {
 		
@@ -44,7 +52,7 @@ class Appointments extends MY_Controller {
    {table_close}</table>{/table_close}
 ';
 	
-	if (TRUE /* $this->require_role('admin') */) {
+	if ($this->require_min_level(6)) {
 		$today = getdate();
 		$year  = $today['year'];
 		$month = $today['mon'];

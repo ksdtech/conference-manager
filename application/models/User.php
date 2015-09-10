@@ -93,8 +93,19 @@ class User extends Auth_model {
 		->result_array();
 	}
 
-	public function login( $user_string, $user_pass ) {
-		
+	public function managed_resource_options($user_id) {
+		$managed_resources = $this->db->select('r.id, r.name')
+			->order_by('r.name')
+			->join('resources r', 'r.id=m.resource_id')
+			->where('m.user_id', $user_id)
+			->get('resource_managers m')
+			->result_array();
+
+		$options = array('' => 'Select a managed resource');
+		foreach ($managed_resources as $resource) {
+			$options[$resource['id']] = $resource['name'];
+		}
+		return $options;
 	}
 	
 	public function update($user_id, $post_data) {

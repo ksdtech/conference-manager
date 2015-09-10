@@ -671,6 +671,18 @@ class Authentication
 		// $url = secure_site_url( $redirect );
 		// header( "Location: " . $url, TRUE, 302 );
 
+		// Login failed ...
+		log_message(
+			'debug',
+			"\n maintain_state_on_oauth_login" .
+			"\n user is banned             = " . ( $auth_data->user_banned === 1 ? 'yes' : 'no' ) .
+			"\n password in database       = " . $auth_data->user_pass .
+			"\n salt in database           = " . $auth_data->user_salt . 
+			"\n user level in database     = " . $auth_data->user_level . 
+			"\n user level equivalant role = " . $this->roles[$auth_data->user_level]
+		);
+
+
 		// Store login time in database and cookie
 		$user_login_time = date('Y-m-d H:i:s');
 
