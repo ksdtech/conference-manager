@@ -18,11 +18,13 @@ $config = array(
 
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
-        'entityID' => null,
+        // Must match the saml.entity-id in the PowerSchool plugin.xml configuration file.
+        'entityID' => 'http://pz.127.0.0.1.xip.io:8080/confmgr',
 
         // The entity ID of the IdP this should SP should contact.
         // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
-        'idp' => null,
+        // Not sure what our PowerSchool idP's entity ID is
+        'idp' => 'https://ksd.powerschool.com',
 
         // The URL to the discovery service.
         // Can be NULL/unset, in which case a builtin discovery service will be used.
