@@ -16,10 +16,16 @@ $config = array(
     'default-sp' => array(
         'saml:SP',
 
+        // Self-signed X509 cert in cert/ directory
+        // Generate a new one with: openssl req -new -x509 -days 3652 -nodes -out saml.crt -keyout saml.pem
+        // 'privatekey' => 'saml.pem',
+        // 'certificate' => 'saml.crt',
+        // 'redirect.sign' => false,
+
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
         // Must match the saml.entity-id in the PowerSchool plugin.xml configuration file.
-        'entityID' => 'http://pz.127.0.0.1.xip.io:8080',
+        'entityID' => 'https://pz.127.0.0.1.xip.io:8443',
 
         // The entity ID of the IdP this should SP should contact.
         // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
@@ -27,13 +33,19 @@ $config = array(
         // link and then "Single Sign-On Service".  Copy the Entity ID from that page here:
         'idp' => 'https://ksd.powerschool.com:443/ConfMgr',
 
+        // Then make sure to adjust the metadata informaiton in metadata/saml20-idp-remote.php
+        // and/or metadata/ship13-idp-remote.php
 
         // See the options page https://simplesamlphp.org/docs/stable/saml:sp
         // PowerSchool supports HTTP-Redirect and HTTP-POST bindings
+        // If you add HTTP-Redirect you get an invalid synthesized AssertionConsumerService entry!
         'acs.Bindings' => [
             'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
         ],
 
+        // To make a valid AuthnRequest, we have to ahve an AuthnContext
+        'AuthnContextClassRef' => 'urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified',
+        
         // The URL to the discovery service.
         // Can be NULL/unset, in which case a builtin discovery service will be used.
         'discoURL' => null,

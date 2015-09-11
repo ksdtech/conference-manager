@@ -13,3 +13,13 @@ $metadata['theproviderid-of-the-idp'] = array(
 	'certFingerprint'      => 'c7279a9f28f11380509e072441e3dc55fb9ab864',
 );
 */
+
+/*
+$metadata['https://ksd.powerschool.com:443/ConfMgr'] = array(
+  'name' => array(
+    'en' => 'PowerSchool Guardian',
+  ),
+  'description'          => 'PowerSchool Guardian login',
+  'SingleSignOnService'  => 'https://powerschool.com:443/powerschool-saml-sso/profile/SAML2/POST/SSO'
+);
+*/

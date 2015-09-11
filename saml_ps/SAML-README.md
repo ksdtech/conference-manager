@@ -39,3 +39,50 @@ PowerSchool says that their IdP will support these bindings as of version 9.0:
     ```
 
 The metadata file that is returned by simpleSAMLphp looks like the default-sp.xml file in this directory.
+
+2. config/authsources.php
+
+
+3. metadata/saml20-idp-remote.php
+
+
+Logging in from PowerSchool
+---------------------------
+
+From simplesamlphp-sp-migration.txt:
+
+#### Overview
+
+This is a quick overview of the API:
+
+    /* Get a reference to our authentication source. */
+    $as = new SimpleSAML_Auth_Simple('default-sp');
+
+    /* Require the user to be authentcated. */
+    $as->requireAuth();
+    /* When that function returns, we have an authenticated user. */
+
+    /*
+     * Retrieve attributes of the user.
+     *
+     * Note: If the user isn't authenticated when getAttributes() is
+     * called, an empty array will be returned.
+     */
+    $attributes = $as->getAttributes();
+
+    /* Log the user out. */
+    $as->logout();
+
+
+
+
+Debugging
+---------
+
+Error Message: Error decoding authentication request message
+
+https://ksd.powerschool.com/powerschool-saml-sso/profile/SAML2/POST/SSO
+
+  ?SAMLRequest=hVJRb9sgGPwrFu82htpJjJJIWaNpkbo1qtM%2B7GWigBs0DIwPr91%2BfbG9SdlLJh6QjrvvvjuxBt4bz3ZDPNsH9WNQELO33lhg08MGDcEyx0EDs7xXwKJg7e7zHaNFyXxw0Qln0IXkuoIDqBC1syg77Dfo25JK2dX1iqqGLwgnlMhGUN5JWS0ryZuGLsiifF7UFcqeVICk3KA0KMkBBnWwELmNCSpJnZdNTsiprBi5YXX5FWX7lEZbHifVOUYPDOPvIAvvXtMwcXbOFML1rKpu8AWWj0FyAIdTwk4bhccAFB%2Fv2xNu23uU7f7muHUWhl6FVoWfWqjHh7vZKRn53wWhy6JMhxRv2hfasVW5KrFwtutfQg4e904ORhX%2B7PHoiWG%2Bac4FTKhUHR9MTFyUHf%2FU%2FUFbqe3L9aafZxKwT6fTMR83R9v1OJtNzYXtf7Zc40vyev4mX5LNYX90Rotf2UcXeh6vbzEiWubdRGUxcAta2ZgKNMa93gbFo9qgGAaF8Ha2%2FPczbt8B
+
+  &RelayState=http%3A%2F%2Fpz.127.0.0.1.xip.io%3A8080%2Fconfmgr-sp%2Fmodule.php%2Fcore%2Fauthenticate.php%3Fas%3Ddefault-sp

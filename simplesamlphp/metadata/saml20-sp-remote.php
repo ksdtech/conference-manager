@@ -27,3 +27,10 @@ $metadata['google.com'] = array(
 	'simplesaml.attributes' => FALSE,
 );
  */
+
+/*
+$metadata['https://pz.127.0.0.1.xip.io:8443'] = array(
+  'AssertionConsumerService' => 'https://pz.127.0.0.1.xip.io:8443/confmgr-sp/module.php/saml/sp/saml2-acs.php/default-sp',
+  'SingleLogoutService'      => 'https://pz.127.0.0.1.xip.io:8443/confmgr-sp/module.php/saml/sp/saml2-logout.php/default-sp',
+);
+*/

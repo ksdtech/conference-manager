@@ -8,17 +8,25 @@
   description="Provides PowerSchool guardian single sign-on link to conference manager application." >
 
   <saml name="ConfMgr"
-    entity-id="http://pz.127.0.0.1.xip.io:8080"
-    base-url="http://pz.127.0.0.1.xip.io:8080/confmgr/index.php/" 
-    metadata-url="http://pz.127.0.0.1.xip.io:8080/confmgr-sp/module.php/saml/sp/metadata.php/default-sp" >
+    entity-id="https://pz.127.0.0.1.xip.io:8443"
+    base-url="https://pz.127.0.0.1.xip.io:8443/confmgr/index.php/" 
+    metadata-url="https://pz.127.0.0.1.xip.io:8443/confmgr-sp/module.php/saml/sp/metadata.php/default-sp" >
 
     <links>
-      <link display-text="Conference Manager" title="Login to Conference Manager" path="psguardians/index">
+      <link display-text="KSD Conference Manager" title="Log in to Conference Manager" path="psguardians/index">
         <ui_contexts>
           <ui_context id="guardian.header" />
         </ui_contexts>
       </link>
     </links>
+    <attributes>
+      <user type="guardian">
+        <attribute name="FIRSTNAME" />
+        <attribute name="LASTNAME" />
+        <attribute name="institutions" attribute-value="school_number" /> 
+        <attribute name="students" attribute-value="student_number" />
+      </user>
+    </attributes>
   </saml>
 
   <publisher name="Kentfield School District">
