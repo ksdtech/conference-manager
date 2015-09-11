@@ -10,6 +10,7 @@
         <thead>
           <tr>
             <th class="mdl-data-table__cell--non-numeric">Booked</th>
+             <th class="mdl-data-table__cell--non-numeric">Appointment With</th>
             <th class="mdl-data-table__cell--non-numeric">Start Time</th>
             <th class="mdl-data-table__cell--non-numeric">Finish Time</th>
           </tr>
@@ -19,12 +20,14 @@
         
           <tr>
        			<td><input type="submit" value = "Unbook" name = "unbook_<?php echo $reservation->id; ?>" id="check_group" value = <?php echo $reservation->id ?>;</td>
+              <td class="mdl-data-table__cell--non-numeric"><?php echo $reservation->resource_user_name(); ?></td>
             <td class="mdl-data-table__cell--non-numeric"><?php echo $reservation->time_start_ampm(); ?></td>
             <td class="mdl-data-table__cell--non-numeric"><?php echo $reservation->time_end_ampm(); ?></td>
           </tr>
         </tbody>
+            <?php } ?>
         </table> 
-           <?php } ?>
+       
         </form>
     </div>
   </div>

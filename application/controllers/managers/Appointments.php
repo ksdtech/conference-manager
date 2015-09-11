@@ -9,7 +9,7 @@ class Appointments extends MY_Controller {
 	 * Maps to the following URL
 	 * 		http://example.com/index.php/teachers/appointments
 	 */
-
+	
 	public function resources() {
 		if ($this->require_min_level(6)) {
 			$this->load->model('User', 'user');
@@ -164,7 +164,7 @@ class Appointments extends MY_Controller {
 					$reservation_id = $matches[1];
 					$data['updated_at'] = date('Y-m-d H:i:s');
 					$data['id'] = $reservation_id;
-					die(var_dump($data['id']));
+					//die(var_dump($data['id']));
 				}
 				else 
 				{
@@ -179,19 +179,103 @@ class Appointments extends MY_Controller {
 		
 	}
 	
-	public function edit_all($resource_id)
+	public function send_email_reminder()
 	{
 		if ($this->require_min_level(6))
 		{
-			$this->load->model('Timeblock', 'timeblock');
-			$this->load->model('Reservation', 'reservation');
+			
+			$this->load->library('email');
+			
+			
+			$config = array('smtp_host' => config_item('smtp_host'),
+					'protocol' => 'smtp',
+					'smtp_port' => 25
+			);
+			
+			
+			$this->email->initialize($config);
+			
+			$this->load->model('User', 'user');
+			$this->load->model('ResourceCalendar', 'resourcecalendar');
+			$User_id = $this->auth_user_id;
+			
+			
+			
+			$teacher_info = $this->user->get_user_info($this->auth_user_id);		
+			$teacher_email = $teacher_info['user_email'];
+			$teacher_name = $teacher_info['first_name'] . ' ' . $teacher_info['last_name'];
+			
+			$reservations = $this->get_all_reservations_for_teacher();
+			
+		
+			
+			foreach ($reservations as $reservation)
+			{
+				
+				//Note: The user is the person who booked the appointment with the current teacher.
+				$user_info = $this->user->get_user_info($reservation -> user_id);
+				$user_email = $user_info['user_email'];
+				$user_name = $user_info['first_name'] . ' ' . $user_info['last_name'];
+				
+				$resource_calendar_name = $this->resourcecalendar->get_resource_calendar_name($reservation -> resource_calendar_id);
+				
+				$this->email->clear();
+				$this->email->from($teacher_email, $teacher_name);
+				$this->email->to($user_email);
+				
+				$this->email->subject($resource_calendar_name . " Appointment Reminder");
+				
+				$message = 'This is an automated reminder that you have an appointment scheduled with ' . $teacher_name . ' on ' . $reservation -> schedule_date . ' at ' . $reservation -> time_start . ".";		
+					
+				//die(var_dump($message));
+				
+				$this->email->message($message);
+				
+				$value = $this->email->send();
+				
+				die(var_dump($this->email->print_debugger()));
+			
+			}
+		}
+	}
+	
+	
+	private function get_all_reservations_for_teacher()
+	{
+		
+		$this->load->model('Timeblock', 'timeblock');
+		$this->load->model('User', 'user');
+		$this->load->model('Reservation', 'reservation');
+		
+		
+		$User_id = $this->auth_user_id;
+		
+		$managed_resources = $this->user->managed_resources($User_id)[0];
+		$resource_ids = array();
+		
+		foreach ($managed_resources as $managed_resource)
+		{
+			array_push($resource_ids, $managed_resources['id']);
+		}
+		
+		
+		$reservations = $this->reservation->all_booked_appointments_for_teacher($resource_ids);
+	
+		return $reservations;
+		
+	}
+	
+	public function edit_all()
+	{
+		if ($this->require_min_level(6))
+		{
+			
 			$this->load->helper(array('form', 'url'));
 			$this->load->library('form_validation');
 	
 			if (!$this->input->post()) {
 	
-				$reservations = $this->reservation->all_booked_appointments_for_teacher($resource_id);
-				$data = array('reservations' => $reservations);
+				$data = array('reservations' => $this->get_all_reservations_for_teacher());
 				$this->load->template('managers/appointments_list',$data);
 			}
 			else

@@ -25,6 +25,12 @@ class ResourceCalendar extends MY_Model {
 	}
 	
 	
+	public function get_resource_calendar_name($resource_calendar_id)
+	{
+		return $this->db->get_where('resource_calendars', array('id' => $resource_calendar_id))
+		->result_array()[0]['name'];
+	}
+	
 	public function read($resource_calendar_id) {
 		return $this->db->where('id', $resource_calendar_id)
 		->limit(1)

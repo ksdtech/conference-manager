@@ -20,6 +20,7 @@ class ResourceCalendars extends MY_Controller {
 		}
 	}
 	
+	
 	public function add() {
 		
 		if ($this->require_role('admin')) {

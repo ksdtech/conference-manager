@@ -35,12 +35,16 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		`location` varchar(40) DEFAULT NULL,
 */
 	
-	public function all_booked_appointments_for_teacher($resource_id)
-	{
-		$reservations = $this -> db->get_where('reservations', array('resource_id' => $resource_id, 'user_id !=' => null))
+	public function all_booked_appointments_for_teacher($resource_ids)
+	{	
+		$reservations = $this -> db->where_in('resource_id', $resource_ids)
+		->where('user_id !=', null)
+		->get('reservations')
 		->result('Reservation');
 		usort($reservations, 'time_compare');
 	
+		//die(var_dump(count($reservations)));
+		
 		return $reservations;
 	}
 	
@@ -191,6 +195,21 @@ CREATE TABLE IF NOT EXISTS `reservations` (
 		
 		
 	}
+	public function resource_user_name()
+	{
+		$resource_id = $this->resource_id;
+		
+		$resource = $this->db->select("u.first_name, u.last_name")
+		->join('users u', 'm.user_id = u.user_id')
+		->where('m.resource_id', $resource_id)
+		->get('resource_managers m')
+		->row_array();
+		
+		$resource_full_name = $resource['first_name'] . " " . $resource['last_name'];
+		
+		return $resource_full_name;
+	}
+	
 	public function user_name()
 	{
 		$user_id = $this->user_id;

@@ -93,6 +93,22 @@ class User extends Auth_model {
 		->result_array();
 	}
 
+	public function get_user_info($user_id)
+	{
+ 		return $this->db->get_where('users', array('user_id' => $user_id))
+ 		->result_array()[0];
+	}
+	
+	public function managed_resources($user_id)
+	{
+		$managed_resources = $this->db->select('r.id')
+		->join('resources r', 'r.id=m.resource_id')
+		->where('m.user_id', $user_id)
+		->get('resource_managers m')
+		->result_array();
+		return $managed_resources;
+	}
+	
 	public function managed_resource_options($user_id) {
 		$managed_resources = $this->db->select('r.id, r.name')
 			->order_by('r.name')
