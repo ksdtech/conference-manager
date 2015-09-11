@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://plugin.powerschool.pearson.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation='http://plugin.powerschool.pearson.com plugin.xsd'
+  name="KSD Conference Manager"
+  version="0.1.0"
+  description="Provides PowerSchool guardian single sign-on link to conference manager application." >
+
+  <saml name="ConfMgr"
+    entity-id="http://pz.127.0.0.1.xip.io:8080"
+    base-url="http://pz.127.0.0.1.xip.io:8080/confmgr/index.php/" 
+    metadata-url="http://pz.127.0.0.1.xip.io:8080/confmgr-sp/module.php/saml/sp/metadata.php/default-sp" >
+
+    <links>
+      <link display-text="Conference Manager" title="Login to Conference Manager" path="psguardians/index">
+        <ui_contexts>
+          <ui_context id="guardian.header" />
+        </ui_contexts>
+      </link>
+    </links>
+  </saml>
+
+  <publisher name="Kentfield School District">
+    <contact email="webmaster@kentfieldschools.org" />
+  </publisher>  
+</plugin>

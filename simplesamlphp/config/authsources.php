@@ -19,12 +19,20 @@ $config = array(
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
         // Must match the saml.entity-id in the PowerSchool plugin.xml configuration file.
-        'entityID' => 'http://pz.127.0.0.1.xip.io:8080/confmgr',
+        'entityID' => 'http://pz.127.0.0.1.xip.io:8080',
 
         // The entity ID of the IdP this should SP should contact.
         // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
-        // Not sure what our PowerSchool idP's entity ID is
-        'idp' => 'https://ksd.powerschool.com',
+        // After installing plugin.xml on your PowerSchool server, click the installed plugin's
+        // link and then "Single Sign-On Service".  Copy the Entity ID from that page here:
+        'idp' => 'https://ksd.powerschool.com:443/ConfMgr',
+
+
+        // See the options page https://simplesamlphp.org/docs/stable/saml:sp
+        // PowerSchool supports HTTP-Redirect and HTTP-POST bindings
+        'acs.Bindings' => [
+            'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
+        ],
 
         // The URL to the discovery service.
         // Can be NULL/unset, in which case a builtin discovery service will be used.
