@@ -534,7 +534,7 @@ class SimpleSAML_Configuration {
 			return $ret;
 		}
 
-		if(!is_string($ret)) {
+		if($ret !== NULL && !is_string($ret)) {
 			throw new Exception($this->location . ': The option ' . var_export($name, TRUE) .
 				' is not a valid string value.');
 		}
