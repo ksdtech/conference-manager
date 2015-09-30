@@ -9,13 +9,13 @@
 
   <saml name="confmgr-sp"
     entity-id="confmgr-sp"
-    base-url="https://24.5.104.247:8443/confmgr/index.php" 
-    metadata-url="https://24.5.104.247:8443/confmgr-sp/module.php/saml/sp/metadata.php/confmgr-sp" >
+    base-url="http://52.24.3.102/conference-manager/index.php" 
+    metadata-url="http://52.24.3.102/conference-manager/simplesamlphp/module.php/saml/sp/metadata.php/confmgr-sp" >
 
     <links>
       <link display-text="KSD Conference Manager" 
         title="Log in to Conference Manager" 
-        path="https://24.5.104.247:8443/confmgr/index.php/psguardians/index">
+        path="http://52.24.3.102/conference-manager/index.php/sso/index">
         <ui_contexts>
           <ui_context id="guardian.header" />
         </ui_contexts>
