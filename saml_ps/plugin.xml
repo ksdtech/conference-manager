@@ -4,16 +4,18 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation='http://plugin.powerschool.pearson.com plugin.xsd'
   name="KSD Conference Manager"
-  version="0.1.0"
+  version="0.1.3"
   description="Provides PowerSchool guardian single sign-on link to conference manager application." >
 
-  <saml name="ConfMgr"
-    entity-id="https://pz.127.0.0.1.xip.io:8443"
-    base-url="https://pz.127.0.0.1.xip.io:8443/confmgr/index.php/" 
-    metadata-url="https://pz.127.0.0.1.xip.io:8443/confmgr-sp/module.php/saml/sp/metadata.php/default-sp" >
+  <saml name="confmgr-sp"
+    entity-id="confmgr-sp"
+    base-url="https://24.5.104.247:8443/confmgr/index.php" 
+    metadata-url="https://24.5.104.247:8443/confmgr-sp/module.php/saml/sp/metadata.php/confmgr-sp" >
 
     <links>
-      <link display-text="KSD Conference Manager" title="Log in to Conference Manager" path="psguardians/index">
+      <link display-text="KSD Conference Manager" 
+        title="Log in to Conference Manager" 
+        path="https://24.5.104.247:8443/confmgr/index.php/psguardians/index">
         <ui_contexts>
           <ui_context id="guardian.header" />
         </ui_contexts>

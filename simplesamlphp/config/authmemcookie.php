@@ -20,7 +20,7 @@ $config = array(
 	 *
 	 * This must be one of the authentication sources configured in config/authsources.php.
 	 */
-	'authsource' => 'default-sp',
+	'authsource' => 'confmgr-sp',
 
 	/*
 	 * This is the name of the cookie we should save the session id in. The value of this option must match the
