@@ -13,42 +13,57 @@ $config = array(
 
     // An authentication source which can authenticate against both SAML 2.0
     // and Shibboleth 1.3 IdPs.
-    'default-sp' => array(
+    'confmgr-sp' => array(
         'saml:SP',
-
-        // Self-signed X509 cert in cert/ directory
-        // Generate a new one with: openssl req -new -x509 -days 3652 -nodes -out saml.crt -keyout saml.pem
-        // 'privatekey' => 'saml.pem',
-        // 'certificate' => 'saml.crt',
-        // 'redirect.sign' => false,
 
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
         // Must match the saml.entity-id in the PowerSchool plugin.xml configuration file.
-        'entityID' => 'https://pz.127.0.0.1.xip.io:8443',
+        'entityID' => 'confmgr-sp',
 
         // The entity ID of the IdP this should SP should contact.
         // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
         // After installing plugin.xml on your PowerSchool server, click the installed plugin's
         // link and then "Single Sign-On Service".  Copy the Entity ID from that page here:
-        'idp' => 'https://ksd.powerschool.com:443/ConfMgr',
+        'idp' => 'https://ksd.powerschool.com:443/confmgr-sp',
 
-        // Then make sure to adjust the metadata informaiton in metadata/saml20-idp-remote.php
-        // and/or metadata/ship13-idp-remote.php
+        // AuthnRequest compatibility with Spring Security SAML Extension example project     
+        'ForceAuthn'   => FALSE,
+        'IsPassive'    => FALSE,
+        'NameIDFormat' => NULL,
 
-        // See the options page https://simplesamlphp.org/docs/stable/saml:sp
-        // PowerSchool supports HTTP-Redirect and HTTP-POST bindings
-        // If you add HTTP-Redirect you get an invalid synthesized AssertionConsumerService entry!
-        'acs.Bindings' => [
-            'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
-        ],
+        // Self-signed X509 cert in cert/ directory
+        // Generate a new one with: openssl req -new -x509 -days 3652 -nodes -out saml.crt -keyout saml.pem
+        // Or Export the certificate from PowerSchool ("Digital Certificate Management" page) and then 
+        // split it into .crt and .pem files.
+        /*
+        'privatekey'  => 'confmgr.pem',
+        'certificate' => 'confmgr.crt',
+        'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+        'sign.authnrequest'   => TRUE,
+        'redirect.sign'       => TRUE,
+        'redirect.validate'   => TRUE,
+        */
+        
+        // The saml20-idp-remote.php file parsed from PowerSchool's "View PowerSchool IDP Metadata"
+        // link specifies HTTP-Redirect, so that's what we'll put here as well.
+        // PowerSchool spec says their SSO IdP supports HTTP-Redirect and HTTP-POST bindings.
+        // Danger: If you specify incorrect bindings, you may get an invalid synthesized 
+        // AssertionConsumerService entry for your service provider.
+        // Check simplesamlphp's SAML 2.o SP Metadata page at
+        // /module.php/saml/sp/metadata.php/confmgr?output=xhtml to make sure all is OK.
+        // If it throws an exception, "<entityID>['AssertionConsumerService']: Missing Location,"
+        // adjust or remove the 'acs.bindings' entry.
+        // 'acs.Bindings' => [
+        //    'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect'
+        // ],
 
-        // To make a valid AuthnRequest, we have to ahve an AuthnContext
-        'AuthnContextClassRef' => 'urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified',
+        // To make a valid AuthnRequest, we should specify an AuthnContext
+        // 'AuthnContextClassRef' => 'urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified',
         
         // The URL to the discovery service.
         // Can be NULL/unset, in which case a builtin discovery service will be used.
-        'discoURL' => null,
+        // 'discoURL' => null,
 
         /*
          * WARNING: SHA-1 is disallowed starting January the 1st, 2014.
