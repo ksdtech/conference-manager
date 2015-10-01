@@ -75,8 +75,8 @@ a few things to avoid errors:
 It should look something like this:
 
     ```
-    $metadata['https://ksd.powerschool.com:443/confmgr'] = array (
-      'entityid' => 'https://ksd.powerschool.com:443/confmgr',
+    $metadata['https://ksd.powerschool.com:443/default-sp'] = array (
+      'entityid' => 'https://ksd.powerschool.com:443/default-sp',
       ...
       'metadata-set' => 'saml20-idp-remote',
       'SingleSignOnService' => 

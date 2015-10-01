@@ -15,7 +15,7 @@ $metadata['theproviderid-of-the-idp'] = array(
 */
 
 /*
-$metadata['https://ksd.powerschool.com:443/confmgr'] = array(
+$metadata['https://ksd.powerschool.com:443/default-sp'] = array(
   'name' => array(
     'en' => 'PowerSchool Guardian',
   ),

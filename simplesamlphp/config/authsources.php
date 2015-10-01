@@ -25,7 +25,7 @@ $config = array(
         // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
         // After installing plugin.xml on your PowerSchool server, click the installed plugin's
         // link and then "Single Sign-On Service".  Copy the Entity ID from that page here:
-        'idp' => 'https://ksd.powerschool.com:443/confmgr',
+        'idp' => 'https://ksd.powerschool.com:443/default-sp',
 
         // AuthnRequest compatibility with Spring Security SAML Extension example project     
         'ForceAuthn'   => FALSE,
