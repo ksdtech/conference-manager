@@ -25,7 +25,7 @@ up-right arrow ("Applications") icon in the header bar. That will pop up a dialo
 with the plugin's name.  The URL for the link will look like this:
 
     ```
-    https://24.5.104.247:8443/confmgr/index.php/psguardians/index?idpmetadata=https%3A%2F%2Fksd.powerschool.com%3A443%2Fpowerschool-saml-sso%2Fmetadata%2FconfmgrMetadata.action&studentContext=true
+    http://52.24.3.102/confmgr/index.php/psguardians/index?idpmetadata=https%3A%2F%2Fksd.powerschool.com%3A443%2Fpowerschool-saml-sso%2Fmetadata%2FconfmgrMetadata.action&studentContext=true
     ```
 
 The URL path is concatenated from the plugin.saml.base-url and the plugin.saml.links.link.path values.
@@ -154,10 +154,10 @@ the IdP's (?) metdata:
 in MetadataCredentialResolver.java, when the SP's metadata.getRole() is called:
     SecurityException("Unable to read metadata provider", e);
 
-I removed the signing and certficate settings in authsources.php, then I got "SAML 2 SSO profile is not configured for relying party 'https://24.5.104.247:8443'".
+I removed the signing and certficate settings in authsources.php, then I got "SAML 2 SSO profile is not configured for relying party 'http://52.24.3.102'".
 
 
-https://24.5.104.247:8443/confmgr-sp/module.php/saml/sp/metadata.php/confmgr
+http://52.24.3.102/default-sp/module.php/saml/sp/metadata.php/confmgr
 
 
 

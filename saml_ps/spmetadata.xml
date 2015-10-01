@@ -5,22 +5,22 @@
     protocolSupportEnumeration="urn:oasis:names:tc:SAML:1.1:protocol urn:oasis:names:tc:SAML:2.0:protocol">
     <md:SingleLogoutService 
       Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" 
-      Location="https://24.5.104.247:8443/confmgr-sp/module.php/saml/sp/saml2-logout.php/confmgr"/>
+      Location="http://52.24.3.102/default-sp/module.php/saml/sp/saml2-logout.php/confmgr"/>
     <md:AssertionConsumerService 
       Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" 
-      Location="https://24.5.104.247:8443/confmgr-sp/module.php/saml/sp/saml2-acs.php/confmgr" 
+      Location="http://52.24.3.102/default-sp/module.php/saml/sp/saml2-acs.php/confmgr" 
       index="0"/>
     <md:AssertionConsumerService 
       Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post" 
-      Location="https://24.5.104.247:8443/confmgr-sp/module.php/saml/sp/saml1-acs.php/confmgr" 
+      Location="http://52.24.3.102/default-sp/module.php/saml/sp/saml1-acs.php/confmgr" 
       index="1"/>
     <md:AssertionConsumerService 
       Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact" 
-      Location="https://24.5.104.247:8443/confmgr-sp/module.php/saml/sp/saml2-acs.php/confmgr" 
+      Location="http://52.24.3.102/default-sp/module.php/saml/sp/saml2-acs.php/confmgr" 
       index="2"/>
     <md:AssertionConsumerService 
       Binding="urn:oasis:names:tc:SAML:1.0:profiles:artifact-01" 
-      Location="https://24.5.104.247:8443/confmgr-sp/module.php/saml/sp/saml1-acs.php/confmgr/artifact"
+      Location="http://52.24.3.102/default-sp/module.php/saml/sp/saml1-acs.php/confmgr/artifact"
       index="3"/>
   </md:SPSSODescriptor>
   <md:ContactPerson contactType="technical">

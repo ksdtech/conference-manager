@@ -25,7 +25,7 @@ class SSO extends MY_Controller {
     {
 
       /* Get a reference to our authentication source. */
-      $as = new SimpleSAML_Auth_Simple('confmgr-sp');
+      $as = new SimpleSAML_Auth_Simple('default-sp');
 
       /* Require the user to be authentcated. */
       /* When that function returns, we have an authenticated user. */

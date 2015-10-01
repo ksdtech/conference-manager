@@ -13,19 +13,19 @@ $config = array(
 
     // An authentication source which can authenticate against both SAML 2.0
     // and Shibboleth 1.3 IdPs.
-    'confmgr-sp' => array(
+    'default-sp' => array(
         'saml:SP',
 
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
         // Must match the saml.entity-id in the PowerSchool plugin.xml configuration file.
-        'entityID' => 'confmgr-sp',
+        'entityID' => 'default-sp',
 
         // The entity ID of the IdP this should SP should contact.
         // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
         // After installing plugin.xml on your PowerSchool server, click the installed plugin's
         // link and then "Single Sign-On Service".  Copy the Entity ID from that page here:
-        'idp' => 'https://ksd.powerschool.com:443/confmgr-sp',
+        'idp' => 'https://ksd.powerschool.com:443/confmgr',
 
         // AuthnRequest compatibility with Spring Security SAML Extension example project     
         'ForceAuthn'   => FALSE,

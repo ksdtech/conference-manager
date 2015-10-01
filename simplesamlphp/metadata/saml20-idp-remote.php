@@ -27,8 +27,8 @@ $metadata['https://openidp.feide.no'] = array(
 // After installing SSO plugin.xml in PowerSchool and configuring a Single Sign-on Certificate
 // click View PowerSchool IDP Metadata, then copy and paste it into your simplesamlphp's 
 // metadata parser, at /admin/metadata-converter.php.  Copy the parsed idp metadata here:
-$metadata['https://ksd.powerschool.com:443/confmgr-sp'] = array (
-  'entityid' => 'https://ksd.powerschool.com:443/confmgr-sp',
+$metadata['https://ksd.powerschool.com:443/default-sp'] = array (
+  'entityid' => 'https://ksd.powerschool.com:443/default-sp',
   'description' => 
   array (
     'en' => 'kentfield school district',
@@ -47,11 +47,11 @@ $metadata['https://ksd.powerschool.com:443/confmgr-sp'] = array (
   ),
   'url' => 
   array (
-    'en' => 'https://ksd.powerschool.com:443/confmgr-sp',
+    'en' => 'https://ksd.powerschool.com:443/default-sp',
   ),
   'OrganizationURL' => 
   array (
-    'en' => 'https://ksd.powerschool.com:443/confmgr-sp',
+    'en' => 'https://ksd.powerschool.com:443/default-sp',
   ),
   'contacts' => 
   array (

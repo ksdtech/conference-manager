@@ -21,7 +21,7 @@ $config = array(
      * external url, no matter where you come from (direct access or via the
      * reverse proxy).
      */
-    'baseurlpath' => 'http://pz.127.0.0.1.xip.io:8080/confmgr-sp/',
+    'baseurlpath' => 'http://myserver/default-sp/',
     'certdir' => 'cert/',
     'loggingdir' => 'log/',
     'datadir' => 'data/',
