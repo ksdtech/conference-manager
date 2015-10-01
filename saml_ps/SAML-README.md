@@ -154,25 +154,16 @@ the IdP's (?) metdata:
 in MetadataCredentialResolver.java, when the SP's metadata.getRole() is called:
     SecurityException("Unable to read metadata provider", e);
 
-I removed the signing and certficate settings in authsources.php, then I got "SAML 2 SSO profile is not configured for relying party 'http://52.24.3.102'".
+I removed the signing and certficate settings in authsources.php, then I got "SAML 2 SSO profile is not configured for relying party 'default-sp'".
 
 
-http://52.24.3.102/default-sp/module.php/saml/sp/metadata.php/confmgr
+Here's the redirect (taken from the simplesamlphp.log file):
 
+    https://ksd.powerschool.com:443/powerschool-saml-sso/profile/SAML2/Redirect/SSO
 
+    ?SAMLRequest=fZJRT8MgFIX%2FSsN7S6Gtm2RbMt2DS2a2rNMHXwyltxuxhcql6s%2B37TTOlz0BB865%2BU6YoWzqViw7fzJ7eO8AffDV1AbFeDEnnTPCStQojGwAhVciXz5uBI9i0TrrrbI1ubBcd0hEcF5bQ4L1ak5eq6xIq0QpOeHTpJim%2FCarIEkLVmSTMrudZIyVVZxW6pYEz%2BCwd85JH9TbETtYG%2FTS%2BF6KWRayOIzZgcciY4LFLyRY9TTaSD%2B6Tt63KCh9wzJq7Wcfpk7W1pGyjUjThF5o4QASIlraE1a6BjoAcLqHUjtQnub5lgTLX5Z7a7BrwOXgPrSCp%2F3mPK0flvGIp1ESsZhTZU0FDoyCsJFGHsFR1E1bw9j0qaWNLbsaomE7SBTPKw%2BlwlEtoZJd7UNsSbD76f5Om1Kb4%2FXai%2FMjFA%2BHwy7cbfMDWcyGbDHW6BZ%2FyTN6qZ9P%2F%2F%2FH4hs%3D
 
-
-Here's the redirect:
-
-https://ksd.powerschool.com:443/powerschool-saml-sso/profile/SAML2/Redirect/SSO
-
-?SAMLRequest=hVLBjtMwFPyVyPfEjpPSrdVWKlshKi1s1RQOXJDrvGwtHNv4OezC16%2BTgiiXIh8sjWfevBl5ibI3XmyGeLYH%2BD4AxuylNxbF9LAiQ7DCSdQorOwBRVSi2Xx4ELxgwgcXnXKGXEluKyQihKidJdluuyJfQba85vM3J3Za8E6ValbCQrIZcFadZlzOZcerumLyjmSfIWBSrkgalOSIA%2BwsRmljglg5y9kiL%2FmRVaKsBWNfSLZNabSVcVKdY%2FQoKP2GbeHdcxqmzs6ZQrle1HVFr7B8DJIjOpoSdtoAHQNweoBWB1CRNs0jyTZ%2Fstw7i0MPoYHwQyv4dHj46%2BZ%2FFSWfFyydsnjRvtBO3I12ytmufwo5etq7djBQ%2BLOnozHFy81zqXBCW%2BjkYGLikmz%2Fu%2FO32rbaPt2u%2B3QhoXh%2FPO7z%2FWNzJOvlOFtM9YX1%2F9Zc0mv28vJZPiaf3XbvjFY%2Fs3cu9DLeXmNEdJt3E1XEIC1qsDFVaIx7vg8gI6xIDAMQur5Y%2Fvsl168%3D
-
-&RelayState=https%3A%2F%2Fpz.127.0.0.1.xip.io%3A8443%2Fconfmgr%2Findex.php%2Fpsguardians%2Findex%3Fidpmetadata%3Dhttps%253A%252F%252Fksd.powerschool.com%253A443%252Fpowerschool-saml-sso%252Fmetadata%252FconfmgrMetadata.action%26studentContext%3Dtrue
-
-&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256
-
-&Signature=yxGuKX2f2JqTvdqEcV4KfjvtIevEa8ZX5DKD5m3ryjYiwfhUFgNhr3IEHVz9oxzLipwreupA8aUQ%2Fvl918x9EvZXqfeYiRyJyQz28cnqjSIwALKYSY3emHf4qvZ0Gq1s7GMAdufeg0bbok3xhrR9rKxe45j4C5YrGwKp5W48xm8%3D
+    &RelayState=http%3A%2F%2F52.24.3.102%2Fconference-manager%2Findex.php%2Fsso%2Findex%3Fidpmetadata%3Dhttps%253A%252F%252Fksd.powerschool.com%253A443%252Fpowerschool-saml-sso%252Fmetadata%252Fdefault-spMetadata.action%26studentContext%3Dtrue
 
 
 Logging in from PowerSchool
